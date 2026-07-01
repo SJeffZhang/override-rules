@@ -72,7 +72,7 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/constants.ts
-  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
+  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
   var init_constants = __esm({
     "src/constants.ts"() {
       "use strict";
@@ -82,6 +82,15 @@ https://github.com/powerfullz/override-rules
       SPEEDTEST_URL = "https://cp.cloudflare.com";
       LOW_COST_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`0\.[0-5]|低倍率|省流|实验性`
+      );
+      FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`花云.*(?:台湾|新加坡|日本).*高级`
+      );
+      SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:花云|滕王阁).*新加坡`
+      );
+      JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:花云|滕王阁).*日本`
       );
       PROXY_GROUPS = {
         SELECT: "选择代理",
@@ -115,8 +124,11 @@ https://github.com/powerfullz/override-rules
         SSH: "SSH",
         SOGOU_INPUT: "搜狗输入法",
         AD_BLOCK: "广告拦截",
+        FLOWER_PREMIUM_ASIA: "花云高级-亚洲",
+        SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
+        JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
         GLOBAL: "GLOBAL",
-        FINAL: "Final"
+        FINAL: "漏网之鱼"
       };
       countriesMeta = {
         香港: {
@@ -288,6 +300,7 @@ https://github.com/powerfullz/override-rules
     }
   }
   function buildProxyGroups({
+    nodes,
     regexFilter,
     groupType,
     countryNames,
@@ -304,12 +317,31 @@ https://github.com/powerfullz/override-rules
     const hasTW = countryNames.includes("台湾");
     const hasHK = countryNames.includes("香港");
     const hasUS = countryNames.includes("美国");
+    const customGroups = [
+      {
+        name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
+        icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
+        matcher: FLOWER_PREMIUM_ASIA_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
+        icon: countriesMeta.新加坡.icon,
+        matcher: SINGAPORE_FLOWER_TWG_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.JAPAN_FLOWER_TWG,
+        icon: countriesMeta.日本.icon,
+        matcher: JAPAN_FLOWER_TWG_NODE_MATCHER
+      }
+    ];
+    const matchNodes = (matcher) => nodes.filter((node) => matcher.regex.test(node.name || ""));
+    const activeCustomGroups = customGroups.map((group) => ({ ...group, nodes: matchNodes(group.matcher) })).filter((group) => regexFilter || group.nodes.length > 0);
     const groups = [
       {
         name: PROXY_GROUPS.SELECT,
         icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Proxy.png`,
         type: "select",
-        proxies: defaultSelector
+        proxies: [...activeCustomGroups.map((group) => group.name), ...defaultSelector]
       },
       {
         name: PROXY_GROUPS.MANUAL,
@@ -317,6 +349,14 @@ https://github.com/powerfullz/override-rules
         "include-all": true,
         type: "select"
       },
+      ...activeCustomGroups.map(
+        (group) => buildGroupByType({
+          name: group.name,
+          icon: group.icon,
+          groupType,
+          nodeSource: regexFilter ? { "include-all": true, filter: group.matcher.pattern } : { proxies: group.nodes.map((node) => node.name).filter(isNotNull) }
+        })
+      ),
       landing ? {
         name: PROXY_GROUPS.FRONT_PROXY,
         icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
@@ -961,6 +1001,7 @@ https://github.com/powerfullz/override-rules
           regexFilter
         });
         const proxyGroups = buildProxyGroups({
+          nodes: config.proxies,
           regexFilter,
           groupType,
           countryNames,
