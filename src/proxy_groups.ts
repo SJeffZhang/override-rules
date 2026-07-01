@@ -1,5 +1,6 @@
 import {
     CDN_URL,
+    EXPERIMENTAL_NODE_MATCHER,
     FLOWER_PREMIUM_ASIA_NODE_MATCHER,
     JAPAN_FLOWER_TWG_NODE_MATCHER,
     SPEEDTEST_URL,
@@ -91,6 +92,7 @@ export function buildProxyGroups({
         name: string;
         icon: string;
         matcher: CaseInsensitiveNodeMatcher;
+        excludeMatcher?: CaseInsensitiveNodeMatcher;
     }> = [
         {
             name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
@@ -101,27 +103,40 @@ export function buildProxyGroups({
             name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
             icon: countriesMeta.新加坡.icon,
             matcher: SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+            excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
         },
         {
             name: PROXY_GROUPS.JAPAN_FLOWER_TWG,
             icon: countriesMeta.日本.icon,
             matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
+            excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
         },
     ];
 
-    const matchNodes = (matcher: CaseInsensitiveNodeMatcher): ProxyNode[] =>
-        nodes.filter((node) => matcher.regex.test(node.name || ""));
+    const matchNodes = (
+        matcher: CaseInsensitiveNodeMatcher,
+        excludeMatcher?: CaseInsensitiveNodeMatcher
+    ): ProxyNode[] =>
+        nodes.filter(
+            (node) =>
+                matcher.regex.test(node.name || "") && !excludeMatcher?.regex.test(node.name || "")
+        );
 
     const activeCustomGroups = customGroups
-        .map((group) => ({ ...group, nodes: matchNodes(group.matcher) }))
+        .map((group) => ({
+            ...group,
+            nodes: matchNodes(group.matcher, group.excludeMatcher),
+        }))
         .filter((group) => regexFilter || group.nodes.length > 0);
+
+    const selectionProxies = [...activeCustomGroups.map((group) => group.name), ...defaultSelector];
 
     const groups: Array<ProxyGroup | null> = [
         {
             name: PROXY_GROUPS.SELECT,
             icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Proxy.png`,
             type: "select",
-            proxies: [...activeCustomGroups.map((group) => group.name), ...defaultSelector],
+            proxies: selectionProxies,
         },
         {
             name: PROXY_GROUPS.MANUAL,
@@ -129,16 +144,6 @@ export function buildProxyGroups({
             "include-all": true,
             type: "select",
         },
-        ...activeCustomGroups.map((group) =>
-            buildGroupByType({
-                name: group.name,
-                icon: group.icon,
-                groupType,
-                nodeSource: regexFilter
-                    ? { "include-all": true as const, filter: group.matcher.pattern }
-                    : { proxies: group.nodes.map((node) => node.name).filter(isNotNull) },
-            })
-        ),
         landing
             ? {
                   name: PROXY_GROUPS.FRONT_PROXY,
@@ -308,7 +313,7 @@ export function buildProxyGroups({
             name: PROXY_GROUPS.FINAL,
             icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Final.png`,
             type: "select",
-            proxies: [PROXY_GROUPS.SELECT, "DIRECT"],
+            proxies: [PROXY_GROUPS.SELECT, ...selectionProxies],
         },
         {
             name: PROXY_GROUPS.AUTO,
@@ -338,6 +343,22 @@ export function buildProxyGroups({
                       : { "include-all": true as const, filter: LOW_COST_NODE_MATCHER.pattern },
               })
             : null,
+        ...activeCustomGroups.map((group) =>
+            buildGroupByType({
+                name: group.name,
+                icon: group.icon,
+                groupType,
+                nodeSource: regexFilter
+                    ? {
+                          "include-all": true as const,
+                          filter: group.matcher.pattern,
+                          ...(group.excludeMatcher
+                              ? { "exclude-filter": group.excludeMatcher.pattern }
+                              : {}),
+                      }
+                    : { proxies: group.nodes.map((node) => node.name).filter(isNotNull) },
+            })
+        ),
         ...countryNames.map((country) => {
             const meta = countriesMeta[country];
             if (!meta) return null;

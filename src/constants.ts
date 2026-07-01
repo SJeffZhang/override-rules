@@ -21,6 +21,8 @@ export const JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
     String.raw`(?:花云|滕王阁).*日本`
 );
 
+export const EXPERIMENTAL_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`实验性`);
+
 export const PROXY_GROUPS = {
     SELECT: "选择代理",
     MANUAL: "手动选择",
@@ -53,7 +55,7 @@ export const PROXY_GROUPS = {
     SSH: "SSH",
     SOGOU_INPUT: "搜狗输入法",
     AD_BLOCK: "广告拦截",
-    FLOWER_PREMIUM_ASIA: "花云高级-亚洲",
+    FLOWER_PREMIUM_ASIA: "花云高级-亚洲AI",
     SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
     JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
     GLOBAL: "GLOBAL",
