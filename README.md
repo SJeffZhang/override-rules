@@ -17,6 +17,59 @@
 
 [点击访问 Forgejo 上的镜像](https://git.l3zc.com/powerfullz/override-rules)
 
+### 本 Fork 的定制内容
+
+本 Fork 在上游规则基础上，为“花云 + 滕王阁 + 良心云”组合订阅增加了三个专用节点组，并将最终兜底策略组明确命名为“漏网之鱼”。
+
+#### 专用节点组
+
+| 代理组 | 节点匹配条件 | 当前样本节点数 |
+| --- | --- | ---: |
+| `花云高级-亚洲` | 节点名称同时包含“花云”“高级”，且地区为台湾、新加坡或日本 | 9 |
+| `新加坡-花云+滕王阁` | 新加坡节点，且机场名称为花云或滕王阁 | 16 |
+| `日本-花云+滕王阁` | 日本节点，且机场名称为花云或滕王阁 | 16 |
+
+节点数不是硬编码值，会根据每次从 Sub-Store 传入的实际节点动态变化。三个专用组会同时出现在顶层“选择代理”中，组类型由原有 `grouptype` 参数控制：
+
+- `grouptype=0`：手动选择；
+- `grouptype=1`：自动测速；
+- `grouptype=2` 或 `loadbalance=true`：负载均衡。
+
+匹配依赖组合订阅中的节点名称包含机场名和地区名，例如：
+
+```text
+花云 日本 高级 01
+滕王阁 新加坡 01
+```
+
+如果上游机场改名，或者取消了 Sub-Store 中“为节点添加机场名称”的操作，需要同步调整 [`src/constants.ts`](src/constants.ts) 内的自定义匹配表达式。
+
+#### 漏网之鱼
+
+原有 `Final` 策略组已更名为 `漏网之鱼`。规则列表最后一条固定为：
+
+```yaml
+MATCH,漏网之鱼
+```
+
+因此，未被前面任何域名、IP、GeoSite 或 Rule Provider 规则匹配的流量，都会进入“漏网之鱼”组。该组默认提供“选择代理”和 `DIRECT` 两个选项。
+
+#### 在线脚本
+
+本 Fork 的 TypeScript 源码保存在 `main` 分支，构建后的 JavaScript 覆写脚本保存在 `preview` 分支。Sub-Store 推荐使用：
+
+```text
+https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/convert.min.js#loadbalance=true
+```
+
+也可以使用 jsDelivr：
+
+```text
+https://cdn.jsdelivr.net/gh/SJeffZhang/override-rules@preview/convert.min.js#loadbalance=true
+```
+
+GitHub Raw 通常更适合开发阶段及时获取最新脚本；jsDelivr 可能存在 CDN 缓存延迟。
+
 ### AFF
 
 #### FlowerCloud
