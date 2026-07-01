@@ -198,6 +198,7 @@ export interface BuildBaseListsInput {
 }
 
 export interface BuildProxyGroupsInput {
+    nodes: ProxyNode[];
     regexFilter: boolean;
     groupType: GroupType;
     countryNames: string[];

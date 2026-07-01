@@ -9,6 +9,18 @@ export const LOW_COST_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
     String.raw`0\.[0-5]|低倍率|省流|实验性`
 );
 
+export const FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`花云.*(?:台湾|新加坡|日本).*高级`
+);
+
+export const SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:花云|滕王阁).*新加坡`
+);
+
+export const JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:花云|滕王阁).*日本`
+);
+
 export const PROXY_GROUPS = {
     SELECT: "选择代理",
     MANUAL: "手动选择",
@@ -41,8 +53,11 @@ export const PROXY_GROUPS = {
     SSH: "SSH",
     SOGOU_INPUT: "搜狗输入法",
     AD_BLOCK: "广告拦截",
+    FLOWER_PREMIUM_ASIA: "花云高级-亚洲",
+    SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
+    JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
     GLOBAL: "GLOBAL",
-    FINAL: "Final",
+    FINAL: "漏网之鱼",
 } as const;
 
 /**

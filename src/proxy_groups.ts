@@ -1,12 +1,21 @@
 import {
     CDN_URL,
+    FLOWER_PREMIUM_ASIA_NODE_MATCHER,
+    JAPAN_FLOWER_TWG_NODE_MATCHER,
     SPEEDTEST_URL,
     LOW_COST_NODE_MATCHER,
     NODE_SUFFIX,
     PROXY_GROUPS,
+    SINGAPORE_FLOWER_TWG_NODE_MATCHER,
     countriesMeta,
 } from "./constants";
-import type { BuildProxyGroupsInput, GroupType, ProxyGroup } from "./types";
+import type {
+    BuildProxyGroupsInput,
+    CaseInsensitiveNodeMatcher,
+    GroupType,
+    ProxyGroup,
+    ProxyNode,
+} from "./types";
 import { isNotNull } from "./utils";
 
 interface BuildGroupByTypeInput {
@@ -60,6 +69,7 @@ function buildGroupByType({
  * @returns 代理组配置数组
  */
 export function buildProxyGroups({
+    nodes,
     regexFilter,
     groupType,
     countryNames,
@@ -76,12 +86,42 @@ export function buildProxyGroups({
     const hasTW = countryNames.includes("台湾");
     const hasHK = countryNames.includes("香港");
     const hasUS = countryNames.includes("美国");
+
+    const customGroups: Array<{
+        name: string;
+        icon: string;
+        matcher: CaseInsensitiveNodeMatcher;
+    }> = [
+        {
+            name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
+            icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
+            matcher: FLOWER_PREMIUM_ASIA_NODE_MATCHER,
+        },
+        {
+            name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
+            icon: countriesMeta.新加坡.icon,
+            matcher: SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+        },
+        {
+            name: PROXY_GROUPS.JAPAN_FLOWER_TWG,
+            icon: countriesMeta.日本.icon,
+            matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
+        },
+    ];
+
+    const matchNodes = (matcher: CaseInsensitiveNodeMatcher): ProxyNode[] =>
+        nodes.filter((node) => matcher.regex.test(node.name || ""));
+
+    const activeCustomGroups = customGroups
+        .map((group) => ({ ...group, nodes: matchNodes(group.matcher) }))
+        .filter((group) => regexFilter || group.nodes.length > 0);
+
     const groups: Array<ProxyGroup | null> = [
         {
             name: PROXY_GROUPS.SELECT,
             icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Proxy.png`,
             type: "select",
-            proxies: defaultSelector,
+            proxies: [...activeCustomGroups.map((group) => group.name), ...defaultSelector],
         },
         {
             name: PROXY_GROUPS.MANUAL,
@@ -89,6 +129,16 @@ export function buildProxyGroups({
             "include-all": true,
             type: "select",
         },
+        ...activeCustomGroups.map((group) =>
+            buildGroupByType({
+                name: group.name,
+                icon: group.icon,
+                groupType,
+                nodeSource: regexFilter
+                    ? { "include-all": true as const, filter: group.matcher.pattern }
+                    : { proxies: group.nodes.map((node) => node.name).filter(isNotNull) },
+            })
+        ),
         landing
             ? {
                   name: PROXY_GROUPS.FRONT_PROXY,

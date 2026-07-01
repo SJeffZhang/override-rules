@@ -90,6 +90,7 @@ function main(config: ClashConfig): ClashConfig {
     });
 
     const proxyGroups = buildProxyGroups({
+        nodes: config.proxies,
         regexFilter,
         groupType,
         countryNames,
