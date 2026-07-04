@@ -1018,6 +1018,32 @@ https://github.com/powerfullz/override-rules
     }
   });
 
+  // src/node_transform.ts
+  function rewriteYTooAnyTLSServers(nodes) {
+    return nodes.map((node) => {
+      if (node.type !== "anytls" || typeof node.server !== "string") {
+        return node;
+      }
+      const mappedServer = YTOO_SERVER_HOST_MAP[node.server];
+      if (!mappedServer) {
+        return node;
+      }
+      return { ...node, server: mappedServer };
+    });
+  }
+  var YTOO_SERVER_HOST_MAP;
+  var init_node_transform = __esm({
+    "src/node_transform.ts"() {
+      "use strict";
+      YTOO_SERVER_HOST_MAP = {
+        "6047f413-ad53.66991163.xyz": "34526e4c-693f.66991163.xyz",
+        "bc2f95b2-590c-11f1.66991163.xyz": "34526e4c-693f-11f11.66991163.xyz",
+        "bc2f95b2-590c-11f2.66991163.xyz": "34526e4c-693f-11f12.66991163.xyz",
+        "bc2f95b2-590c-11f3.66991163.xyz": "34526e4c-693f-11f13.66991163.xyz"
+      };
+    }
+  });
+
   // src/main.ts
   var require_main = __commonJS({
     "src/main.ts"() {
@@ -1030,6 +1056,7 @@ https://github.com/powerfullz/override-rules
       init_dns();
       init_tun();
       init_selectors();
+      init_node_transform();
       var geoxURL = {
         geoip: `${CDN_URL}/gh/MetaCubeX/meta-rules-dat@release/geoip.dat`,
         geosite: `${CDN_URL}/gh/MetaCubeX/meta-rules-dat@release/geosite.dat`,
@@ -1059,10 +1086,11 @@ https://github.com/powerfullz/override-rules
         if (!config.proxies || !Array.isArray(config.proxies)) {
           throw new Error("[powerfullz 的覆写脚本] 错误：Clash 配置中缺少有效的 proxies 字段");
         }
-        const { landingNodes, nonLandingNodes } = parseNodesByLanding(config.proxies);
+        const proxies = rewriteYTooAnyTLSServers(config.proxies);
+        const { landingNodes, nonLandingNodes } = parseNodesByLanding(proxies);
         const landing = landingNodes.length > 0 && nonLandingNodes.length > 0;
-        const countryNodes = parseCountries(landing ? nonLandingNodes : config.proxies);
-        const lowCostNodes = parseLowCost(landing ? nonLandingNodes : config.proxies);
+        const countryNodes = parseCountries(landing ? nonLandingNodes : proxies);
+        const lowCostNodes = parseLowCost(landing ? nonLandingNodes : proxies);
         const countryNames = getActiveCountryNames(countryNodes, countryThreshold);
         const {
           defaultProxies,
@@ -1078,7 +1106,7 @@ https://github.com/powerfullz/override-rules
           regexFilter
         });
         const proxyGroups = buildProxyGroups({
-          nodes: config.proxies,
+          nodes: proxies,
           regexFilter,
           groupType,
           countryNames,
@@ -1102,7 +1130,7 @@ https://github.com/powerfullz/override-rules
         });
         const finalRules = buildRules({ quicEnabled });
         return {
-          proxies: config.proxies,
+          proxies,
           ...fullConfig && {
             "mixed-port": 7890,
             "redir-port": 7892,
