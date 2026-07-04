@@ -72,7 +72,7 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/constants.ts
-  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
+  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, FLOWER_PREMIUM_TAIWAN_NODE_MATCHER, FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER, FLOWER_PREMIUM_JAPAN_NODE_MATCHER, HONG_KONG_FLOWER_TWG_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
   var init_constants = __esm({
     "src/constants.ts"() {
       "use strict";
@@ -85,6 +85,18 @@ https://github.com/powerfullz/override-rules
       );
       FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`花云.*(?:台湾|新加坡|日本).*高级`
+      );
+      FLOWER_PREMIUM_TAIWAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`花云.*台湾.*高级`
+      );
+      FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`花云.*新加坡.*高级`
+      );
+      FLOWER_PREMIUM_JAPAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`花云.*日本.*高级`
+      );
+      HONG_KONG_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:花云|滕王阁).*香港`
       );
       SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`(?:花云|滕王阁).*新加坡`
@@ -126,6 +138,10 @@ https://github.com/powerfullz/override-rules
         SOGOU_INPUT: "搜狗输入法",
         AD_BLOCK: "广告拦截",
         FLOWER_PREMIUM_ASIA: "花云高级-亚洲AI",
+        FLOWER_PREMIUM_TAIWAN: "花云高级-台湾",
+        FLOWER_PREMIUM_SINGAPORE: "花云高级-新加坡",
+        FLOWER_PREMIUM_JAPAN: "花云高级-日本",
+        HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁",
         SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
         JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
         GLOBAL: "GLOBAL",
@@ -323,6 +339,27 @@ https://github.com/powerfullz/override-rules
         name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
         icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
         matcher: FLOWER_PREMIUM_ASIA_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.FLOWER_PREMIUM_TAIWAN,
+        icon: countriesMeta.台湾.icon,
+        matcher: FLOWER_PREMIUM_TAIWAN_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.FLOWER_PREMIUM_SINGAPORE,
+        icon: countriesMeta.新加坡.icon,
+        matcher: FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.FLOWER_PREMIUM_JAPAN,
+        icon: countriesMeta.日本.icon,
+        matcher: FLOWER_PREMIUM_JAPAN_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.HONG_KONG_FLOWER_TWG,
+        icon: countriesMeta.香港.icon,
+        matcher: HONG_KONG_FLOWER_TWG_NODE_MATCHER,
+        excludeMatcher: EXPERIMENTAL_NODE_MATCHER
       },
       {
         name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
