@@ -32,6 +32,7 @@ import { ruleProviders } from "./rule_providers";
 import { buildDns, snifferConfig } from "./dns";
 import { buildTunConfig } from "./tun";
 import { buildBaseLists } from "./selectors";
+import { rewriteYTooAnyTLSServers } from "./node_transform";
 import type { ClashConfig, ScriptArgs } from "./types";
 
 const geoxURL = {
@@ -69,10 +70,11 @@ function main(config: ClashConfig): ClashConfig {
     if (!config.proxies || !Array.isArray(config.proxies)) {
         throw new Error("[powerfullz 的覆写脚本] 错误：Clash 配置中缺少有效的 proxies 字段");
     }
-    const { landingNodes, nonLandingNodes } = parseNodesByLanding(config.proxies);
+    const proxies = rewriteYTooAnyTLSServers(config.proxies);
+    const { landingNodes, nonLandingNodes } = parseNodesByLanding(proxies);
     const landing = landingNodes.length > 0 && nonLandingNodes.length > 0;
-    const countryNodes = parseCountries(landing ? nonLandingNodes : config.proxies);
-    const lowCostNodes = parseLowCost(landing ? nonLandingNodes : config.proxies);
+    const countryNodes = parseCountries(landing ? nonLandingNodes : proxies);
+    const lowCostNodes = parseLowCost(landing ? nonLandingNodes : proxies);
     const countryNames = getActiveCountryNames(countryNodes, countryThreshold);
 
     const {
@@ -90,7 +92,7 @@ function main(config: ClashConfig): ClashConfig {
     });
 
     const proxyGroups = buildProxyGroups({
-        nodes: config.proxies,
+        nodes: proxies,
         regexFilter,
         groupType,
         countryNames,
@@ -117,7 +119,7 @@ function main(config: ClashConfig): ClashConfig {
     const finalRules = buildRules({ quicEnabled });
 
     return {
-        proxies: config.proxies,
+        proxies,
         ...(fullConfig && {
             "mixed-port": 7890,
             "redir-port": 7892,
