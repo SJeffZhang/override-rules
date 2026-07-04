@@ -13,6 +13,22 @@ export const FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher
     String.raw`花云.*(?:台湾|新加坡|日本).*高级`
 );
 
+export const FLOWER_PREMIUM_TAIWAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`花云.*台湾.*高级`
+);
+
+export const FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`花云.*新加坡.*高级`
+);
+
+export const FLOWER_PREMIUM_JAPAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`花云.*日本.*高级`
+);
+
+export const HONG_KONG_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:花云|滕王阁).*香港`
+);
+
 export const SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
     String.raw`(?:花云|滕王阁).*新加坡`
 );
@@ -56,6 +72,10 @@ export const PROXY_GROUPS = {
     SOGOU_INPUT: "搜狗输入法",
     AD_BLOCK: "广告拦截",
     FLOWER_PREMIUM_ASIA: "花云高级-亚洲AI",
+    FLOWER_PREMIUM_TAIWAN: "花云高级-台湾",
+    FLOWER_PREMIUM_SINGAPORE: "花云高级-新加坡",
+    FLOWER_PREMIUM_JAPAN: "花云高级-日本",
+    HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁",
     SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
     JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
     GLOBAL: "GLOBAL",
