@@ -7,6 +7,7 @@ import {
     FLOWER_PREMIUM_TAIWAN_NODE_MATCHER,
     HONG_KONG_FLOWER_TWG_NODE_MATCHER,
     JAPAN_FLOWER_TWG_NODE_MATCHER,
+    NICHE_REGION_NODE_MATCHER,
     SPEEDTEST_URL,
     LOW_COST_NODE_MATCHER,
     NODE_SUFFIX,
@@ -97,6 +98,7 @@ export function buildProxyGroups({
         icon: string;
         matcher: CaseInsensitiveNodeMatcher;
         excludeMatcher?: CaseInsensitiveNodeMatcher;
+        forceSelect?: boolean;
     }> = [
         {
             name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
@@ -135,6 +137,12 @@ export function buildProxyGroups({
             icon: countriesMeta.日本.icon,
             matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
             excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
+        },
+        {
+            name: PROXY_GROUPS.NICHE_REGION,
+            icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
+            matcher: NICHE_REGION_NODE_MATCHER,
+            forceSelect: true,
         },
     ];
 
@@ -392,7 +400,7 @@ export function buildProxyGroups({
             buildGroupByType({
                 name: group.name,
                 icon: group.icon,
-                groupType,
+                groupType: group.forceSelect ? 0 : groupType,
                 nodeSource: regexFilter
                     ? {
                           "include-all": true as const,

@@ -10,34 +10,38 @@ export const LOW_COST_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
 );
 
 export const FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`花云.*(?:台湾|新加坡|日本).*高级`
+    String.raw`(?:花云|YToo).*(?:台湾|新加坡|日本).*高级`
 );
 
 export const FLOWER_PREMIUM_TAIWAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`花云.*台湾.*高级`
+    String.raw`(?:花云|YToo).*台湾.*高级`
 );
 
 export const FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`花云.*新加坡.*高级`
+    String.raw`(?:花云|YToo).*新加坡.*高级`
 );
 
 export const FLOWER_PREMIUM_JAPAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`花云.*日本.*高级`
+    String.raw`(?:花云|YToo).*日本.*高级`
 );
 
 export const HONG_KONG_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|滕王阁).*香港`
+    String.raw`(?:(?:花云|滕王阁).*香港|YToo.*香港.*高级)`
 );
 
 export const SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|滕王阁).*新加坡`
+    String.raw`(?:(?:花云|滕王阁).*新加坡|YToo.*新加坡.*高级)`
 );
 
 export const JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|滕王阁).*日本`
+    String.raw`(?:(?:花云|滕王阁).*日本|YToo.*日本.*高级)`
 );
 
 export const EXPERIMENTAL_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`实验性`);
+
+export const NICHE_REGION_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`摩尔多瓦|意大利|匈牙利|西班牙|荷兰|巴西|智利|新西兰|印尼|印度尼西亚|越南|巴基斯坦|以色列|阿联酋|阿拉伯联合酋长国|尼日利亚|南非`
+);
 
 export const PROXY_GROUPS = {
     SELECT: "选择代理",
@@ -75,9 +79,10 @@ export const PROXY_GROUPS = {
     FLOWER_PREMIUM_TAIWAN: "花云高级-台湾",
     FLOWER_PREMIUM_SINGAPORE: "花云高级-新加坡",
     FLOWER_PREMIUM_JAPAN: "花云高级-日本",
-    HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁",
-    SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁",
-    JAPAN_FLOWER_TWG: "日本-花云+滕王阁",
+    HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁+YToo",
+    SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁+YToo",
+    JAPAN_FLOWER_TWG: "日本-花云+滕王阁+YToo",
+    NICHE_REGION: "小众地区",
     GLOBAL: "GLOBAL",
     FINAL: "漏网之鱼",
 } as const;
