@@ -72,7 +72,7 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/constants.ts
-  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, FLOWER_PREMIUM_TAIWAN_NODE_MATCHER, FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER, FLOWER_PREMIUM_JAPAN_NODE_MATCHER, HONG_KONG_FLOWER_TWG_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, NICHE_REGION_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
+  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, FLOWER_PREMIUM_TAIWAN_NODE_MATCHER, FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER, FLOWER_PREMIUM_JAPAN_NODE_MATCHER, HONG_KONG_FLOWER_TWG_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER, LIANGXINYUN_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, NICHE_REGION_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
   var init_constants = __esm({
     "src/constants.ts"() {
       "use strict";
@@ -104,6 +104,10 @@ https://github.com/powerfullz/override-rules
       JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`(?:(?:花云|滕王阁).*日本|YToo.*日本.*高级)`
       );
+      UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|亚特兰大|迈阿密|华盛顿|\b(?:US|us)(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC|🇺🇸`
+      );
+      LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`良心云`);
       EXPERIMENTAL_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`实验性`);
       NICHE_REGION_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`摩尔多瓦|意大利|匈牙利|西班牙|荷兰|巴西|智利|新西兰|印尼|印度尼西亚|越南|巴基斯坦|以色列|阿联酋|阿拉伯联合酋长国|尼日利亚|南非`
@@ -147,6 +151,7 @@ https://github.com/powerfullz/override-rules
         HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁+YToo",
         SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁+YToo",
         JAPAN_FLOWER_TWG: "日本-花云+滕王阁+YToo",
+        UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-花云+滕王阁+YToo",
         NICHE_REGION: "小众地区",
         GLOBAL: "GLOBAL",
         FINAL: "漏网之鱼"
@@ -376,6 +381,12 @@ https://github.com/powerfullz/override-rules
         icon: countriesMeta.日本.icon,
         matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
         excludeMatcher: EXPERIMENTAL_NODE_MATCHER
+      },
+      {
+        name: PROXY_GROUPS.UNITED_STATES_EXCLUDE_LIANGXINYUN,
+        icon: countriesMeta.美国.icon,
+        matcher: UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER,
+        excludeMatcher: LIANGXINYUN_NODE_MATCHER
       },
       {
         name: PROXY_GROUPS.NICHE_REGION,
