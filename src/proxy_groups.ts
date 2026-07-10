@@ -7,12 +7,14 @@ import {
     FLOWER_PREMIUM_TAIWAN_NODE_MATCHER,
     HONG_KONG_FLOWER_TWG_NODE_MATCHER,
     JAPAN_FLOWER_TWG_NODE_MATCHER,
+    LIANGXINYUN_NODE_MATCHER,
     NICHE_REGION_NODE_MATCHER,
     SPEEDTEST_URL,
     LOW_COST_NODE_MATCHER,
     NODE_SUFFIX,
     PROXY_GROUPS,
     SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+    UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER,
     countriesMeta,
 } from "./constants";
 import type {
@@ -137,6 +139,12 @@ export function buildProxyGroups({
             icon: countriesMeta.日本.icon,
             matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
             excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
+        },
+        {
+            name: PROXY_GROUPS.UNITED_STATES_EXCLUDE_LIANGXINYUN,
+            icon: countriesMeta.美国.icon,
+            matcher: UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER,
+            excludeMatcher: LIANGXINYUN_NODE_MATCHER,
         },
         {
             name: PROXY_GROUPS.NICHE_REGION,

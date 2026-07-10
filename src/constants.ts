@@ -37,6 +37,12 @@ export const JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
     String.raw`(?:(?:花云|滕王阁).*日本|YToo.*日本.*高级)`
 );
 
+export const UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|亚特兰大|迈阿密|华盛顿|\b(?:US|us)(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC|🇺🇸`
+);
+
+export const LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`良心云`);
+
 export const EXPERIMENTAL_NODE_MATCHER = createCaseInsensitiveNodeMatcher(String.raw`实验性`);
 
 export const NICHE_REGION_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
@@ -82,6 +88,7 @@ export const PROXY_GROUPS = {
     HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁+YToo",
     SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁+YToo",
     JAPAN_FLOWER_TWG: "日本-花云+滕王阁+YToo",
+    UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-花云+滕王阁+YToo",
     NICHE_REGION: "小众地区",
     GLOBAL: "GLOBAL",
     FINAL: "漏网之鱼",
