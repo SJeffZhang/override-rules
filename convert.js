@@ -10,10 +10,11 @@ https://github.com/powerfullz/override-rules
 - tun: 启用 TUN 模式（默认 false）
 - full: 输出完整配置（适合纯内核启动，默认 false）
 - keepalive: 启用 tcp-keep-alive（默认 false）
-- fakeip: DNS 使用 FakeIP 模式（默认 true；传 false 时为 RedirHost）
+- fakeip: 兼容旧参数；校园网 DNS 固化后始终输出 FakeIP
 - quic: 允许 QUIC 流量（UDP 443，默认 false）
 - threshold: 地区节点数量小于该值时不显示分组 (默认 0)
 - regex: 使用正则过滤模式（include-all + filter）写入各地区代理组，而非直接枚举节点名称（默认 false）
+- network_interface: 绑定出站网卡，默认 en0；传空字符串则不输出 interface-name
 
 源码已迁移至 `src/*.ts`。
 */
@@ -272,6 +273,13 @@ https://github.com/powerfullz/override-rules
     if (raw === 0 || raw === 1 || raw === 2) return raw;
     return 1;
   }
+  function parseNetworkInterface(args) {
+    if (!Object.prototype.hasOwnProperty.call(args, "network_interface")) {
+      return "en0";
+    }
+    const value = String(args.network_interface ?? "").trim();
+    return value.length > 0 ? value : void 0;
+  }
   function buildFeatureFlags(args) {
     return {
       groupType: parseGroupType(args),
@@ -282,7 +290,8 @@ https://github.com/powerfullz/override-rules
       quicEnabled: parseBool(args.quic),
       regexFilter: parseBool(args.regex),
       tunEnabled: parseBool(args.tun),
-      countryThreshold: parseNumber(args.threshold, 2)
+      countryThreshold: parseNumber(args.threshold, 2),
+      networkInterface: parseNetworkInterface(args)
     };
   }
   var init_args = __esm({
@@ -888,33 +897,31 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/dns.ts
-  function buildDnsConfig({ mode, ipv6Enabled, fakeIpFilter }) {
+  function buildDnsConfig({ existingDns, fakeIpFilter }) {
     const config = {
       enable: true,
-      ipv6: ipv6Enabled,
-      "prefer-h3": true,
-      "enhanced-mode": mode,
-      "default-nameserver": ["119.29.29.29", "223.5.5.5"],
-      nameserver: ["system", "223.5.5.5", "119.29.29.29", "180.184.1.1"],
-      fallback: [
-        "quic://dns0.eu",
-        "https://dns.cloudflare.com/dns-query",
-        "https://dns.sb/dns-query",
-        "tcp://208.67.222.222",
-        "tcp://8.26.56.2"
-      ],
-      "proxy-server-nameserver": ["https://dns.alidns.com/dns-query", "tls://dot.pub"]
+      ipv6: false,
+      "prefer-h3": false,
+      "enhanced-mode": "fake-ip",
+      "use-hosts": true,
+      "use-system-hosts": false,
+      "default-nameserver": ["223.5.5.5"],
+      nameserver: ["https://dns.alidns.com/dns-query"],
+      "proxy-server-nameserver": ["https://dns.alidns.com/dns-query"]
     };
-    if (fakeIpFilter) {
-      config["fake-ip-filter"] = fakeIpFilter;
+    if (existingDns?.["fake-ip-range"]) {
+      config["fake-ip-range"] = existingDns["fake-ip-range"];
+    }
+    const preservedFakeIpFilter = existingDns?.["fake-ip-filter"] ?? fakeIpFilter;
+    if (preservedFakeIpFilter) {
+      config["fake-ip-filter"] = preservedFakeIpFilter;
     }
     return config;
   }
-  function buildDns({ fakeIPEnabled, ipv6Enabled }) {
-    if (fakeIPEnabled) {
-      return buildDnsConfig({ mode: "fake-ip", ipv6Enabled, fakeIpFilter: FAKE_IP_FILTER });
-    }
-    return buildDnsConfig({ mode: "redir-host", ipv6Enabled });
+  function buildDns({ fakeIPEnabled, ipv6Enabled, existingDns }) {
+    void fakeIPEnabled;
+    void ipv6Enabled;
+    return buildDnsConfig({ existingDns, fakeIpFilter: FAKE_IP_FILTER });
   }
   var FAKE_IP_FILTER, snifferConfig;
   var init_dns = __esm({
@@ -1032,26 +1039,27 @@ https://github.com/powerfullz/override-rules
   // src/node_transform.ts
   function rewriteYTooAnyTLSServers(nodes) {
     return nodes.map((node) => {
-      if (node.type !== "anytls" || typeof node.server !== "string") {
+      if (typeof node.server !== "string") {
         return node;
       }
-      const mappedServer = YTOO_SERVER_HOST_MAP[node.server];
+      const mappedServer = YTOO_SERVER_ALIASES[node.server];
       if (!mappedServer) {
         return node;
       }
       return { ...node, server: mappedServer };
     });
   }
-  var YTOO_SERVER_HOST_MAP;
+  var YTOO_SERVER_ALIASES, LEGACY_YTOO_HOST_ALIAS_KEYS;
   var init_node_transform = __esm({
     "src/node_transform.ts"() {
       "use strict";
-      YTOO_SERVER_HOST_MAP = {
-        "6047f413-ad53.66991163.xyz": "34526e4c-693f.66991163.xyz",
-        "bc2f95b2-590c-11f1.66991163.xyz": "34526e4c-693f-11f11.66991163.xyz",
-        "bc2f95b2-590c-11f2.66991163.xyz": "34526e4c-693f-11f12.66991163.xyz",
-        "bc2f95b2-590c-11f3.66991163.xyz": "34526e4c-693f-11f13.66991163.xyz"
+      YTOO_SERVER_ALIASES = {
+        "6047f413-ad53.163cdn-ai.net": "9f6072cc-59fb-11f.163cdn-ai.net",
+        "bc2f95b2-590c-11f1.163cdn-ai.net": "34526e4c-693f-11f11.163cdn-ai.net",
+        "bc2f95b2-590c-11f2.163cdn-ai.net": "34526e4c-693f-11f12.163cdn-ai.net",
+        "bc2f95b2-590c-11f3.163cdn-ai.net": "34526e4c-693f-11f13.163cdn-ai.net"
       };
+      LEGACY_YTOO_HOST_ALIAS_KEYS = Object.freeze(Object.keys(YTOO_SERVER_ALIASES));
     }
   });
 
@@ -1091,8 +1099,17 @@ https://github.com/powerfullz/override-rules
         quicEnabled,
         regexFilter,
         tunEnabled,
-        countryThreshold
+        countryThreshold,
+        networkInterface
       } = buildFeatureFlags(rawArgs);
+      function buildHosts(existingHosts) {
+        const hosts = { ...existingHosts ?? {} };
+        for (const legacyHost of LEGACY_YTOO_HOST_ALIAS_KEYS) {
+          delete hosts[legacyHost];
+        }
+        hosts["dns.alidns.com"] = "223.5.5.5";
+        return hosts;
+      }
       function main(config) {
         if (!config.proxies || !Array.isArray(config.proxies)) {
           throw new Error("[powerfullz 的覆写脚本] 错误：Clash 配置中缺少有效的 proxies 字段");
@@ -1142,6 +1159,8 @@ https://github.com/powerfullz/override-rules
         const finalRules = buildRules({ quicEnabled });
         return {
           proxies,
+          ...networkInterface ? { "interface-name": networkInterface } : {},
+          hosts: buildHosts(config.hosts),
           ...fullConfig && {
             "mixed-port": 7890,
             "redir-port": 7892,
@@ -1164,7 +1183,7 @@ https://github.com/powerfullz/override-rules
           "rule-providers": ruleProviders,
           rules: finalRules,
           sniffer: snifferConfig,
-          dns: buildDns({ fakeIPEnabled, ipv6Enabled }),
+          dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns }),
           tun: buildTunConfig(tunEnabled),
           "geodata-mode": true,
           "geox-url": geoxURL
