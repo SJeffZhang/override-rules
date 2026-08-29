@@ -17,6 +17,15 @@ function parseGroupType(args: ScriptArgs): GroupType {
     return 1;
 }
 
+function parseNetworkInterface(args: ScriptArgs): string | undefined {
+    if (!Object.prototype.hasOwnProperty.call(args, "network_interface")) {
+        return "en0";
+    }
+
+    const value = String(args.network_interface ?? "").trim();
+    return value.length > 0 ? value : undefined;
+}
+
 /**
  * 解析传入的脚本参数，并将其转换为内部使用的功能开关（feature flags）。
  * @param args - 从外部脚本环境（如 Substore）传入的原始参数对象
@@ -33,5 +42,6 @@ export function buildFeatureFlags(args: ScriptArgs): FeatureFlags {
         regexFilter: parseBool(args.regex),
         tunEnabled: parseBool(args.tun),
         countryThreshold: parseNumber(args.threshold, 2),
+        networkInterface: parseNetworkInterface(args),
     };
 }

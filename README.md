@@ -60,7 +60,49 @@ YToo 与花云一样会被普通国家/地区解析器按节点名称归入对�
 
 YToo 的原始 Mihomo 配置依赖顶层 `hosts` 映射解析 AnyTLS 入口域名。Sub-Store 在组合多个订阅时只提取节点，不会保留各订阅的顶层 `hosts`，导致 YToo 节点虽然字段完整且配置校验通过，实际连接仍会超时。
 
-本 Fork 会在生成完整配置前识别 YToo 使用的 AnyTLS 入口别名，并按照原订阅的映射改写节点 `server`。修复仅作用于映射表中已知的 AnyTLS 入口，不修改其他机场节点。
+本 Fork 会在生成完整配置前识别 YToo 使用的旧入口域名，并直接改写节点 `server` 到机场维护的动态别名。修复仅作用于映射表中完全命中的 `server` 字段，不修改节点名称、协议、端口、SNI、密码或其他机场节点。
+
+当前固化的 YToo 映射为：
+
+```text
+6047f413-ad53.163cdn-ai.net      -> 9f6072cc-59fb-11f.163cdn-ai.net
+bc2f95b2-590c-11f1.163cdn-ai.net -> 34526e4c-693f-11f11.163cdn-ai.net
+bc2f95b2-590c-11f2.163cdn-ai.net -> 34526e4c-693f-11f12.163cdn-ai.net
+bc2f95b2-590c-11f3.163cdn-ai.net -> 34526e4c-693f-11f13.163cdn-ai.net
+```
+
+#### 校园网 DNS 固化
+
+为适配当前校园网环境，脚本会统一规范化顶层 DNS 配置为 AliDNS DoH over HTTP/2 链路：
+
+```yaml
+interface-name: en0
+hosts:
+  dns.alidns.com: 223.5.5.5
+dns:
+  enable: true
+  ipv6: false
+  prefer-h3: false
+  enhanced-mode: fake-ip
+  use-hosts: true
+  use-system-hosts: false
+  default-nameserver:
+    - 223.5.5.5
+  nameserver:
+    - https://dns.alidns.com/dns-query
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+```
+
+脚本会保留输入配置里已有的 `dns.fake-ip-filter` 和 `dns.fake-ip-range`，并删除 `dns.fallback`、`dns.fallback-filter`、`tls://dot.pub`、`quic://dns0.eu`、`udp://127.0.0.1:1053` 等旧 DNS 上游。顶层 `hosts` 会合并保留无关自定义记录，同时写入 `dns.alidns.com: 223.5.5.5` 并删除旧 YToo hosts 别名映射。
+
+`network_interface` 参数用于控制 `interface-name`：
+
+- 默认不传时输出 `interface-name: en0`；
+- 传其他网卡名时输出对应值，例如 `#loadbalance=true&network_interface=en1`；
+- 传空字符串时不输出 `interface-name`。
+
+DNS enhanced-mode 已按校园网方案固定为 `fake-ip`，旧的 `fakeip=false` 参数仅保留兼容，不再把 DNS 切换到 `redir-host`。
 
 #### 漏网之鱼
 

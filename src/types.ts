@@ -9,6 +9,7 @@ export interface ScriptArgs {
     regex?: string;
     threshold?: string;
     tun?: string;
+    network_interface?: string;
 }
 
 export type GroupType = 0 | 1 | 2;
@@ -23,6 +24,7 @@ export interface FeatureFlags {
     regexFilter: boolean;
     countryThreshold: number;
     tunEnabled: boolean;
+    networkInterface?: string;
 }
 
 export interface ProxyNode {
@@ -108,11 +110,16 @@ export interface DnsConfig {
     ipv6: boolean;
     "prefer-h3": boolean;
     "enhanced-mode": "redir-host" | "fake-ip";
+    "use-hosts"?: boolean;
+    "use-system-hosts"?: boolean;
     "default-nameserver": string[];
     nameserver: string[];
-    fallback: string[];
+    fallback?: string[];
+    "fallback-filter"?: unknown;
     "proxy-server-nameserver": string[];
     "fake-ip-filter"?: string[];
+    "fake-ip-range"?: string;
+    [key: string]: unknown;
 }
 
 export type RuleProviderType = "http" | "file";
@@ -165,6 +172,8 @@ export interface ClashConfig {
     "geodata-loader"?: "standard" | "memconservative";
     "external-controller"?: string;
     "disable-keep-alive"?: boolean;
+    "interface-name"?: string;
+    hosts?: Record<string, string>;
     profile?: ClashProfile;
 }
 

@@ -10,6 +10,7 @@
     "build": "npm run typecheck && node scripts/build.mjs",
     "generate": "tsx scripts/yaml_generator/generator.ts",
     "artifacts": "npm run build && npm run generate",
+    "test": "node scripts/campus_patch_smoke_test.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

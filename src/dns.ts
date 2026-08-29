@@ -40,39 +40,37 @@ export const snifferConfig: SnifferConfig = {
  * 构建 DNS 配置的输入参数类型。
  */
 interface BuildDnsConfigInput {
-    mode: "redir-host" | "fake-ip";
-    ipv6Enabled: boolean;
+    existingDns?: DnsConfig;
     fakeIpFilter?: string[];
 }
 
 /**
  * 构建 Clash DNS 配置对象。
  * @param {BuildDnsConfigInput} params - 构建参数
- * @param {('redir-host'|'fake-ip')} params.mode - DNS 增强模式
- * @param {boolean} params.ipv6Enabled - 是否启用 IPv6
+ * @param {DnsConfig=} params.existingDns - 输入配置中已有的 DNS 配置，用于保留 fake-ip 相关业务设置
  * @param {string[]=} params.fakeIpFilter - fake-ip 过滤域名列表（可选）
  * @returns {DnsConfig} DNS 配置对象
  */
-function buildDnsConfig({ mode, ipv6Enabled, fakeIpFilter }: BuildDnsConfigInput): DnsConfig {
+function buildDnsConfig({ existingDns, fakeIpFilter }: BuildDnsConfigInput): DnsConfig {
     const config: DnsConfig = {
         enable: true,
-        ipv6: ipv6Enabled,
-        "prefer-h3": true,
-        "enhanced-mode": mode,
-        "default-nameserver": ["119.29.29.29", "223.5.5.5"],
-        nameserver: ["system", "223.5.5.5", "119.29.29.29", "180.184.1.1"],
-        fallback: [
-            "quic://dns0.eu",
-            "https://dns.cloudflare.com/dns-query",
-            "https://dns.sb/dns-query",
-            "tcp://208.67.222.222",
-            "tcp://8.26.56.2",
-        ],
-        "proxy-server-nameserver": ["https://dns.alidns.com/dns-query", "tls://dot.pub"],
+        ipv6: false,
+        "prefer-h3": false,
+        "enhanced-mode": "fake-ip",
+        "use-hosts": true,
+        "use-system-hosts": false,
+        "default-nameserver": ["223.5.5.5"],
+        nameserver: ["https://dns.alidns.com/dns-query"],
+        "proxy-server-nameserver": ["https://dns.alidns.com/dns-query"],
     };
 
-    if (fakeIpFilter) {
-        config["fake-ip-filter"] = fakeIpFilter;
+    if (existingDns?.["fake-ip-range"]) {
+        config["fake-ip-range"] = existingDns["fake-ip-range"];
+    }
+
+    const preservedFakeIpFilter = existingDns?.["fake-ip-filter"] ?? fakeIpFilter;
+    if (preservedFakeIpFilter) {
+        config["fake-ip-filter"] = preservedFakeIpFilter;
     }
 
     return config;
@@ -84,18 +82,19 @@ function buildDnsConfig({ mode, ipv6Enabled, fakeIpFilter }: BuildDnsConfigInput
 export interface BuildDnsInput {
     fakeIPEnabled: boolean;
     ipv6Enabled: boolean;
+    existingDns?: DnsConfig;
 }
 
 /**
  * 根据 fakeIP 和 IPv6 开关生成最终 DNS 配置。
  * @param {BuildDnsInput} params - 构建参数
- * @param {boolean} params.fakeIPEnabled - 是否启用 fake-ip 模式
- * @param {boolean} params.ipv6Enabled - 是否启用 IPv6
+ * @param {boolean} params.fakeIPEnabled - 兼容旧参数；校园网 DNS 固化后始终输出 fake-ip
+ * @param {boolean} params.ipv6Enabled - 兼容旧参数；校园网 DNS 固化后 DNS 层始终关闭 IPv6
+ * @param {DnsConfig=} params.existingDns - 输入配置中已有 DNS 配置
  * @returns {DnsConfig} DNS 配置对象
  */
-export function buildDns({ fakeIPEnabled, ipv6Enabled }: BuildDnsInput): DnsConfig {
-    if (fakeIPEnabled) {
-        return buildDnsConfig({ mode: "fake-ip", ipv6Enabled, fakeIpFilter: FAKE_IP_FILTER });
-    }
-    return buildDnsConfig({ mode: "redir-host", ipv6Enabled });
+export function buildDns({ fakeIPEnabled, ipv6Enabled, existingDns }: BuildDnsInput): DnsConfig {
+    void fakeIPEnabled;
+    void ipv6Enabled;
+    return buildDnsConfig({ existingDns, fakeIpFilter: FAKE_IP_FILTER });
 }

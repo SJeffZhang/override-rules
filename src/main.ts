@@ -10,10 +10,11 @@ https://github.com/powerfullz/override-rules
 - tun: 启用 TUN 模式（默认 false）
 - full: 输出完整配置（适合纯内核启动，默认 false）
 - keepalive: 启用 tcp-keep-alive（默认 false）
-- fakeip: DNS 使用 FakeIP 模式（默认 true；传 false 时为 RedirHost）
+- fakeip: 兼容旧参数；校园网 DNS 固化后始终输出 FakeIP
 - quic: 允许 QUIC 流量（UDP 443，默认 false）
 - threshold: 地区节点数量小于该值时不显示分组 (默认 0)
 - regex: 使用正则过滤模式（include-all + filter）写入各地区代理组，而非直接枚举节点名称（默认 false）
+- network_interface: 绑定出站网卡，默认 en0；传空字符串则不输出 interface-name
 
 源码已迁移至 `src/*.ts`。
 */
@@ -32,7 +33,7 @@ import { ruleProviders } from "./rule_providers";
 import { buildDns, snifferConfig } from "./dns";
 import { buildTunConfig } from "./tun";
 import { buildBaseLists } from "./selectors";
-import { rewriteYTooAnyTLSServers } from "./node_transform";
+import { LEGACY_YTOO_HOST_ALIAS_KEYS, rewriteYTooAnyTLSServers } from "./node_transform";
 import type { ClashConfig, ScriptArgs } from "./types";
 
 const geoxURL = {
@@ -64,7 +65,19 @@ const {
     regexFilter,
     tunEnabled,
     countryThreshold,
+    networkInterface,
 } = buildFeatureFlags(rawArgs);
+
+function buildHosts(existingHosts: ClashConfig["hosts"]): Record<string, string> {
+    const hosts = { ...(existingHosts ?? {}) };
+
+    for (const legacyHost of LEGACY_YTOO_HOST_ALIAS_KEYS) {
+        delete hosts[legacyHost];
+    }
+
+    hosts["dns.alidns.com"] = "223.5.5.5";
+    return hosts;
+}
 
 function main(config: ClashConfig): ClashConfig {
     if (!config.proxies || !Array.isArray(config.proxies)) {
@@ -120,6 +133,8 @@ function main(config: ClashConfig): ClashConfig {
 
     return {
         proxies,
+        ...(networkInterface ? { "interface-name": networkInterface } : {}),
+        hosts: buildHosts(config.hosts),
         ...(fullConfig && {
             "mixed-port": 7890,
             "redir-port": 7892,
@@ -142,7 +157,7 @@ function main(config: ClashConfig): ClashConfig {
         "rule-providers": ruleProviders,
         rules: finalRules,
         sniffer: snifferConfig,
-        dns: buildDns({ fakeIPEnabled, ipv6Enabled }),
+        dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns }),
         tun: buildTunConfig(tunEnabled),
         "geodata-mode": true,
         "geox-url": geoxURL,
