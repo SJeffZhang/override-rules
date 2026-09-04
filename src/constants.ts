@@ -9,32 +9,16 @@ export const LOW_COST_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
     String.raw`0\.[0-5]|低倍率|省流|实验性`
 );
 
-export const FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|YToo).*(?:台湾|新加坡|日本).*高级`
+export const HONG_KONG_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:iNetS|滕王阁).*香港`
 );
 
-export const FLOWER_PREMIUM_TAIWAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|YToo).*台湾.*高级`
+export const SINGAPORE_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:iNetS|滕王阁).*新加坡`
 );
 
-export const FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|YToo).*新加坡.*高级`
-);
-
-export const FLOWER_PREMIUM_JAPAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:花云|YToo).*日本.*高级`
-);
-
-export const HONG_KONG_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:(?:花云|滕王阁).*香港|YToo.*香港.*高级)`
-);
-
-export const SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:(?:花云|滕王阁).*新加坡|YToo.*新加坡.*高级)`
-);
-
-export const JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-    String.raw`(?:(?:花云|滕王阁).*日本|YToo.*日本.*高级)`
+export const JAPAN_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+    String.raw`(?:iNetS|滕王阁).*日本`
 );
 
 export const UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
@@ -81,14 +65,10 @@ export const PROXY_GROUPS = {
     SSH: "SSH",
     SOGOU_INPUT: "搜狗输入法",
     AD_BLOCK: "广告拦截",
-    FLOWER_PREMIUM_ASIA: "高级 花云+YZoo-亚洲AI",
-    FLOWER_PREMIUM_TAIWAN: "高级 花云+YZoo-台湾",
-    FLOWER_PREMIUM_SINGAPORE: "高级 花云+YZoo-新加坡",
-    FLOWER_PREMIUM_JAPAN: "高级 花云+YZoo-日本",
-    HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁+YToo",
-    SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁+YToo",
-    JAPAN_FLOWER_TWG: "日本-花云+滕王阁+YToo",
-    UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-花云+滕王阁+YToo",
+    HONG_KONG_INETS_TWG: "香港-iNetS+滕王阁",
+    SINGAPORE_INETS_TWG: "新加坡-iNetS+滕王阁",
+    JAPAN_INETS_TWG: "日本-iNetS+滕王阁",
+    UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-iNetS+滕王阁",
     NICHE_REGION: "小众地区",
     GLOBAL: "GLOBAL",
     FINAL: "漏网之鱼",

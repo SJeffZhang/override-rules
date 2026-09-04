@@ -1,19 +1,15 @@
 import {
     CDN_URL,
     EXPERIMENTAL_NODE_MATCHER,
-    FLOWER_PREMIUM_ASIA_NODE_MATCHER,
-    FLOWER_PREMIUM_JAPAN_NODE_MATCHER,
-    FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER,
-    FLOWER_PREMIUM_TAIWAN_NODE_MATCHER,
-    HONG_KONG_FLOWER_TWG_NODE_MATCHER,
-    JAPAN_FLOWER_TWG_NODE_MATCHER,
+    HONG_KONG_INETS_TWG_NODE_MATCHER,
+    JAPAN_INETS_TWG_NODE_MATCHER,
     LIANGXINYUN_NODE_MATCHER,
     NICHE_REGION_NODE_MATCHER,
     SPEEDTEST_URL,
     LOW_COST_NODE_MATCHER,
     NODE_SUFFIX,
     PROXY_GROUPS,
-    SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+    SINGAPORE_INETS_TWG_NODE_MATCHER,
     UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER,
     countriesMeta,
 } from "./constants";
@@ -103,41 +99,21 @@ export function buildProxyGroups({
         forceSelect?: boolean;
     }> = [
         {
-            name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
-            icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
-            matcher: FLOWER_PREMIUM_ASIA_NODE_MATCHER,
-        },
-        {
-            name: PROXY_GROUPS.FLOWER_PREMIUM_TAIWAN,
-            icon: countriesMeta.台湾.icon,
-            matcher: FLOWER_PREMIUM_TAIWAN_NODE_MATCHER,
-        },
-        {
-            name: PROXY_GROUPS.FLOWER_PREMIUM_SINGAPORE,
-            icon: countriesMeta.新加坡.icon,
-            matcher: FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER,
-        },
-        {
-            name: PROXY_GROUPS.FLOWER_PREMIUM_JAPAN,
-            icon: countriesMeta.日本.icon,
-            matcher: FLOWER_PREMIUM_JAPAN_NODE_MATCHER,
-        },
-        {
-            name: PROXY_GROUPS.HONG_KONG_FLOWER_TWG,
+            name: PROXY_GROUPS.HONG_KONG_INETS_TWG,
             icon: countriesMeta.香港.icon,
-            matcher: HONG_KONG_FLOWER_TWG_NODE_MATCHER,
+            matcher: HONG_KONG_INETS_TWG_NODE_MATCHER,
             excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
         },
         {
-            name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
+            name: PROXY_GROUPS.SINGAPORE_INETS_TWG,
             icon: countriesMeta.新加坡.icon,
-            matcher: SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+            matcher: SINGAPORE_INETS_TWG_NODE_MATCHER,
             excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
         },
         {
-            name: PROXY_GROUPS.JAPAN_FLOWER_TWG,
+            name: PROXY_GROUPS.JAPAN_INETS_TWG,
             icon: countriesMeta.日本.icon,
-            matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
+            matcher: JAPAN_INETS_TWG_NODE_MATCHER,
             excludeMatcher: EXPERIMENTAL_NODE_MATCHER,
         },
         {

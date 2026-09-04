@@ -33,7 +33,6 @@ import { ruleProviders } from "./rule_providers";
 import { buildDns, snifferConfig } from "./dns";
 import { buildTunConfig } from "./tun";
 import { buildBaseLists } from "./selectors";
-import { LEGACY_YTOO_HOST_ALIAS_KEYS, rewriteYTooAnyTLSServers } from "./node_transform";
 import type { ClashConfig, ScriptArgs } from "./types";
 
 const geoxURL = {
@@ -70,11 +69,6 @@ const {
 
 function buildHosts(existingHosts: ClashConfig["hosts"]): Record<string, string> {
     const hosts = { ...(existingHosts ?? {}) };
-
-    for (const legacyHost of LEGACY_YTOO_HOST_ALIAS_KEYS) {
-        delete hosts[legacyHost];
-    }
-
     hosts["dns.alidns.com"] = "223.5.5.5";
     return hosts;
 }
@@ -83,7 +77,7 @@ function main(config: ClashConfig): ClashConfig {
     if (!config.proxies || !Array.isArray(config.proxies)) {
         throw new Error("[powerfullz 的覆写脚本] 错误：Clash 配置中缺少有效的 proxies 字段");
     }
-    const proxies = rewriteYTooAnyTLSServers(config.proxies);
+    const proxies = config.proxies;
     const { landingNodes, nonLandingNodes } = parseNodesByLanding(proxies);
     const landing = landingNodes.length > 0 && nonLandingNodes.length > 0;
     const countryNodes = parseCountries(landing ? nonLandingNodes : proxies);
