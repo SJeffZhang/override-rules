@@ -73,7 +73,7 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/constants.ts
-  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, FLOWER_PREMIUM_ASIA_NODE_MATCHER, FLOWER_PREMIUM_TAIWAN_NODE_MATCHER, FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER, FLOWER_PREMIUM_JAPAN_NODE_MATCHER, HONG_KONG_FLOWER_TWG_NODE_MATCHER, SINGAPORE_FLOWER_TWG_NODE_MATCHER, JAPAN_FLOWER_TWG_NODE_MATCHER, UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER, LIANGXINYUN_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, NICHE_REGION_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
+  var NODE_SUFFIX, CDN_URL, SPEEDTEST_URL, LOW_COST_NODE_MATCHER, HONG_KONG_INETS_TWG_NODE_MATCHER, SINGAPORE_INETS_TWG_NODE_MATCHER, JAPAN_INETS_TWG_NODE_MATCHER, UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER, LIANGXINYUN_NODE_MATCHER, EXPERIMENTAL_NODE_MATCHER, NICHE_REGION_NODE_MATCHER, PROXY_GROUPS, countriesMeta;
   var init_constants = __esm({
     "src/constants.ts"() {
       "use strict";
@@ -84,26 +84,14 @@ https://github.com/powerfullz/override-rules
       LOW_COST_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`0\.[0-5]|低倍率|省流|实验性`
       );
-      FLOWER_PREMIUM_ASIA_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:花云|YToo).*(?:台湾|新加坡|日本).*高级`
+      HONG_KONG_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:iNetS|滕王阁).*香港`
       );
-      FLOWER_PREMIUM_TAIWAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:花云|YToo).*台湾.*高级`
+      SINGAPORE_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:iNetS|滕王阁).*新加坡`
       );
-      FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:花云|YToo).*新加坡.*高级`
-      );
-      FLOWER_PREMIUM_JAPAN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:花云|YToo).*日本.*高级`
-      );
-      HONG_KONG_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:(?:花云|滕王阁).*香港|YToo.*香港.*高级)`
-      );
-      SINGAPORE_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:(?:花云|滕王阁).*新加坡|YToo.*新加坡.*高级)`
-      );
-      JAPAN_FLOWER_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
-        String.raw`(?:(?:花云|滕王阁).*日本|YToo.*日本.*高级)`
+      JAPAN_INETS_TWG_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
+        String.raw`(?:iNetS|滕王阁).*日本`
       );
       UNITED_STATES_EXCLUDE_LIANGXINYUN_NODE_MATCHER = createCaseInsensitiveNodeMatcher(
         String.raw`美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|亚特兰大|迈阿密|华盛顿|\b(?:US|us)(?:[-_ ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC|🇺🇸`
@@ -145,14 +133,10 @@ https://github.com/powerfullz/override-rules
         SSH: "SSH",
         SOGOU_INPUT: "搜狗输入法",
         AD_BLOCK: "广告拦截",
-        FLOWER_PREMIUM_ASIA: "高级 花云+YZoo-亚洲AI",
-        FLOWER_PREMIUM_TAIWAN: "高级 花云+YZoo-台湾",
-        FLOWER_PREMIUM_SINGAPORE: "高级 花云+YZoo-新加坡",
-        FLOWER_PREMIUM_JAPAN: "高级 花云+YZoo-日本",
-        HONG_KONG_FLOWER_TWG: "香港-花云+滕王阁+YToo",
-        SINGAPORE_FLOWER_TWG: "新加坡-花云+滕王阁+YToo",
-        JAPAN_FLOWER_TWG: "日本-花云+滕王阁+YToo",
-        UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-花云+滕王阁+YToo",
+        HONG_KONG_INETS_TWG: "香港-iNetS+滕王阁",
+        SINGAPORE_INETS_TWG: "新加坡-iNetS+滕王阁",
+        JAPAN_INETS_TWG: "日本-iNetS+滕王阁",
+        UNITED_STATES_EXCLUDE_LIANGXINYUN: "美国-iNetS+滕王阁",
         NICHE_REGION: "小众地区",
         GLOBAL: "GLOBAL",
         FINAL: "漏网之鱼"
@@ -354,41 +338,21 @@ https://github.com/powerfullz/override-rules
     const hasUS = countryNames.includes("美国");
     const customGroups = [
       {
-        name: PROXY_GROUPS.FLOWER_PREMIUM_ASIA,
-        icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Area.png`,
-        matcher: FLOWER_PREMIUM_ASIA_NODE_MATCHER
-      },
-      {
-        name: PROXY_GROUPS.FLOWER_PREMIUM_TAIWAN,
-        icon: countriesMeta.台湾.icon,
-        matcher: FLOWER_PREMIUM_TAIWAN_NODE_MATCHER
-      },
-      {
-        name: PROXY_GROUPS.FLOWER_PREMIUM_SINGAPORE,
-        icon: countriesMeta.新加坡.icon,
-        matcher: FLOWER_PREMIUM_SINGAPORE_NODE_MATCHER
-      },
-      {
-        name: PROXY_GROUPS.FLOWER_PREMIUM_JAPAN,
-        icon: countriesMeta.日本.icon,
-        matcher: FLOWER_PREMIUM_JAPAN_NODE_MATCHER
-      },
-      {
-        name: PROXY_GROUPS.HONG_KONG_FLOWER_TWG,
+        name: PROXY_GROUPS.HONG_KONG_INETS_TWG,
         icon: countriesMeta.香港.icon,
-        matcher: HONG_KONG_FLOWER_TWG_NODE_MATCHER,
+        matcher: HONG_KONG_INETS_TWG_NODE_MATCHER,
         excludeMatcher: EXPERIMENTAL_NODE_MATCHER
       },
       {
-        name: PROXY_GROUPS.SINGAPORE_FLOWER_TWG,
+        name: PROXY_GROUPS.SINGAPORE_INETS_TWG,
         icon: countriesMeta.新加坡.icon,
-        matcher: SINGAPORE_FLOWER_TWG_NODE_MATCHER,
+        matcher: SINGAPORE_INETS_TWG_NODE_MATCHER,
         excludeMatcher: EXPERIMENTAL_NODE_MATCHER
       },
       {
-        name: PROXY_GROUPS.JAPAN_FLOWER_TWG,
+        name: PROXY_GROUPS.JAPAN_INETS_TWG,
         icon: countriesMeta.日本.icon,
-        matcher: JAPAN_FLOWER_TWG_NODE_MATCHER,
+        matcher: JAPAN_INETS_TWG_NODE_MATCHER,
         excludeMatcher: EXPERIMENTAL_NODE_MATCHER
       },
       {
@@ -1036,33 +1000,6 @@ https://github.com/powerfullz/override-rules
     }
   });
 
-  // src/node_transform.ts
-  function rewriteYTooAnyTLSServers(nodes) {
-    return nodes.map((node) => {
-      if (typeof node.server !== "string") {
-        return node;
-      }
-      const mappedServer = YTOO_SERVER_ALIASES[node.server];
-      if (!mappedServer) {
-        return node;
-      }
-      return { ...node, server: mappedServer };
-    });
-  }
-  var YTOO_SERVER_ALIASES, LEGACY_YTOO_HOST_ALIAS_KEYS;
-  var init_node_transform = __esm({
-    "src/node_transform.ts"() {
-      "use strict";
-      YTOO_SERVER_ALIASES = {
-        "6047f413-ad53.163cdn-ai.net": "9f6072cc-59fb-11f.163cdn-ai.net",
-        "bc2f95b2-590c-11f1.163cdn-ai.net": "34526e4c-693f-11f11.163cdn-ai.net",
-        "bc2f95b2-590c-11f2.163cdn-ai.net": "34526e4c-693f-11f12.163cdn-ai.net",
-        "bc2f95b2-590c-11f3.163cdn-ai.net": "34526e4c-693f-11f13.163cdn-ai.net"
-      };
-      LEGACY_YTOO_HOST_ALIAS_KEYS = Object.freeze(Object.keys(YTOO_SERVER_ALIASES));
-    }
-  });
-
   // src/main.ts
   var require_main = __commonJS({
     "src/main.ts"() {
@@ -1075,7 +1012,6 @@ https://github.com/powerfullz/override-rules
       init_dns();
       init_tun();
       init_selectors();
-      init_node_transform();
       var geoxURL = {
         geoip: `${CDN_URL}/gh/MetaCubeX/meta-rules-dat@release/geoip.dat`,
         geosite: `${CDN_URL}/gh/MetaCubeX/meta-rules-dat@release/geosite.dat`,
@@ -1104,9 +1040,6 @@ https://github.com/powerfullz/override-rules
       } = buildFeatureFlags(rawArgs);
       function buildHosts(existingHosts) {
         const hosts = { ...existingHosts ?? {} };
-        for (const legacyHost of LEGACY_YTOO_HOST_ALIAS_KEYS) {
-          delete hosts[legacyHost];
-        }
         hosts["dns.alidns.com"] = "223.5.5.5";
         return hosts;
       }
@@ -1114,7 +1047,7 @@ https://github.com/powerfullz/override-rules
         if (!config.proxies || !Array.isArray(config.proxies)) {
           throw new Error("[powerfullz 的覆写脚本] 错误：Clash 配置中缺少有效的 proxies 字段");
         }
-        const proxies = rewriteYTooAnyTLSServers(config.proxies);
+        const proxies = config.proxies;
         const { landingNodes, nonLandingNodes } = parseNodesByLanding(proxies);
         const landing = landingNodes.length > 0 && nonLandingNodes.length > 0;
         const countryNodes = parseCountries(landing ? nonLandingNodes : proxies);
