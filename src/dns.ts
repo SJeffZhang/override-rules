@@ -21,6 +21,8 @@ const WECHAT_DNS_POLICY_DOMAINS = [
     "+.weixin.qq.com",
     "+.wx.qq.com",
     "+.wximg.qq.com",
+    "+.qpic.cn",
+    "+.qlogo.cn",
     "+.mmbiz.qpic.cn",
     "+.mmsns.qpic.cn",
 ];

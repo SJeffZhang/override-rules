@@ -162,6 +162,14 @@ assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.wximg.qq.com"],
     "10.10.10.10",
     "10.10.10.11",
 ]);
+assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.qpic.cn"], [
+    "10.10.10.10",
+    "10.10.10.11",
+]);
+assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.qlogo.cn"], [
+    "10.10.10.10",
+    "10.10.10.11",
+]);
 assert.equal(Object.hasOwn(outputWithCampusDns.dns["nameserver-policy"], "+.qq.com"), false);
 
 console.log(

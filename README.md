@@ -82,6 +82,10 @@ dns:
       - CAMPUS_DNS
     +.wximg.qq.com:
       - CAMPUS_DNS
+    +.qpic.cn:
+      - CAMPUS_DNS
+    +.qlogo.cn:
+      - CAMPUS_DNS
     +.mmbiz.qpic.cn:
       - CAMPUS_DNS
     +.mmsns.qpic.cn:
@@ -100,7 +104,7 @@ https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/c
 #loadbalance=true&campus_dns=10.10.10.10,10.10.10.11
 ```
 
-未传 `campus_dns` 时，脚本不会写入 `nameserver-policy`，避免把微信域名指向错误 DNS。脚本不会匹配 `+.qq.com`，只针对微信与微信媒体常见域名做 DNS 分流。
+未传 `campus_dns` 时，脚本不会写入 `nameserver-policy`，避免把微信域名指向错误 DNS。图片 CDN 覆盖 `+.qpic.cn`、`+.qlogo.cn`（包括 `mmbiz.qpic.cn`、`mmsns.qpic.cn` 等子域名）；脚本不会匹配范围过大的 `+.qq.com`。
 
 脚本会保留输入配置里已有的 `dns.fake-ip-filter` 和 `dns.fake-ip-range`，并删除 `dns.fallback`、`dns.fallback-filter`、`tls://dot.pub`、`quic://dns0.eu`、`udp://127.0.0.1:1053` 等旧 DNS 上游。顶层 `hosts` 会合并保留无关自定义记录，同时写入 `dns.alidns.com: 223.5.5.5`。
 
