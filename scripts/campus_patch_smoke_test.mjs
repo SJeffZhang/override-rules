@@ -119,6 +119,7 @@ assert.equal(output.dns["use-system-hosts"], false);
 assert.deepEqual(output.dns["default-nameserver"], ["223.5.5.5"]);
 assert.deepEqual(output.dns.nameserver, ["https://dns.alidns.com/dns-query"]);
 assert.deepEqual(output.dns["proxy-server-nameserver"], ["https://dns.alidns.com/dns-query"]);
+assert.equal("nameserver-policy" in output.dns, false);
 assert.equal("fallback" in output.dns, false);
 assert.equal("fallback-filter" in output.dns, false);
 assert.deepEqual(output.dns["fake-ip-filter"], ["example.internal"]);
@@ -148,11 +149,27 @@ assertPolicyReferences(output);
 const outputWithoutInterface = clone(runConvert(input, { network_interface: "" }));
 assert.equal(Object.hasOwn(outputWithoutInterface, "interface-name"), false);
 
+const outputWithCampusDns = clone(runConvert(input, { campus_dns: "10.10.10.10,10.10.10.11" }));
+assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.wechat.com"], [
+    "10.10.10.10",
+    "10.10.10.11",
+]);
+assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.weixin.com"], [
+    "10.10.10.10",
+    "10.10.10.11",
+]);
+assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.wximg.qq.com"], [
+    "10.10.10.10",
+    "10.10.10.11",
+]);
+assert.equal(Object.hasOwn(outputWithCampusDns.dns["nameserver-policy"], "+.qq.com"), false);
+
 console.log(
     JSON.stringify(
         {
             status: "ok",
             dnsNameserver: output.dns.nameserver,
+            wechatDnsPolicy: outputWithCampusDns.dns["nameserver-policy"]["+.wechat.com"],
             proxyServerNameserver: output.dns["proxy-server-nameserver"],
             interfaceName: output["interface-name"],
         },

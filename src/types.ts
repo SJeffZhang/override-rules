@@ -10,6 +10,7 @@ export interface ScriptArgs {
     threshold?: string;
     tun?: string;
     network_interface?: string;
+    campus_dns?: string;
 }
 
 export type GroupType = 0 | 1 | 2;
@@ -25,6 +26,7 @@ export interface FeatureFlags {
     countryThreshold: number;
     tunEnabled: boolean;
     networkInterface?: string;
+    campusDnsServers: string[];
 }
 
 export interface ProxyNode {
@@ -117,6 +119,7 @@ export interface DnsConfig {
     fallback?: string[];
     "fallback-filter"?: unknown;
     "proxy-server-nameserver": string[];
+    "nameserver-policy"?: Record<string, string[]>;
     "fake-ip-filter"?: string[];
     "fake-ip-range"?: string;
     [key: string]: unknown;

@@ -15,6 +15,7 @@ https://github.com/powerfullz/override-rules
 - threshold: 地区节点数量小于该值时不显示分组 (默认 0)
 - regex: 使用正则过滤模式（include-all + filter）写入各地区代理组，而非直接枚举节点名称（默认 false）
 - network_interface: 绑定出站网卡，默认 en0；传空字符串则不输出 interface-name
+- campus_dns: 校园网 DHCP DNS，逗号/分号/竖线分隔；填写后微信相关域名使用 nameserver-policy 指向该 DNS
 
 源码已迁移至 `src/*.ts`。
 */
@@ -65,6 +66,7 @@ const {
     tunEnabled,
     countryThreshold,
     networkInterface,
+    campusDnsServers,
 } = buildFeatureFlags(rawArgs);
 
 function buildHosts(existingHosts: ClashConfig["hosts"]): Record<string, string> {
@@ -151,7 +153,7 @@ function main(config: ClashConfig): ClashConfig {
         "rule-providers": ruleProviders,
         rules: finalRules,
         sniffer: snifferConfig,
-        dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns }),
+        dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns, campusDnsServers }),
         tun: buildTunConfig(tunEnabled),
         "geodata-mode": true,
         "geox-url": geoxURL,

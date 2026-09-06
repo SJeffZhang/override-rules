@@ -26,6 +26,13 @@ function parseNetworkInterface(args: ScriptArgs): string | undefined {
     return value.length > 0 ? value : undefined;
 }
 
+function parseStringList(value: string | undefined): string[] {
+    return String(value ?? "")
+        .split(/[,;|]/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+}
+
 /**
  * 解析传入的脚本参数，并将其转换为内部使用的功能开关（feature flags）。
  * @param args - 从外部脚本环境（如 Substore）传入的原始参数对象
@@ -43,5 +50,6 @@ export function buildFeatureFlags(args: ScriptArgs): FeatureFlags {
         tunEnabled: parseBool(args.tun),
         countryThreshold: parseNumber(args.threshold, 2),
         networkInterface: parseNetworkInterface(args),
+        campusDnsServers: parseStringList(args.campus_dns),
     };
 }
