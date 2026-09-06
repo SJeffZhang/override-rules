@@ -1069,6 +1069,7 @@ https://github.com/powerfullz/override-rules
         networkInterface,
         campusDnsServers
       } = buildFeatureFlags(rawArgs);
+      var effectiveIpv6Enabled = campusDnsServers.length === 0 && ipv6Enabled;
       function buildHosts(existingHosts) {
         const hosts = { ...existingHosts ?? {} };
         hosts["dns.alidns.com"] = "223.5.5.5";
@@ -1124,6 +1125,7 @@ https://github.com/powerfullz/override-rules
         return {
           proxies,
           ...networkInterface ? { "interface-name": networkInterface } : {},
+          ...campusDnsServers.length > 0 && { ipv6: false },
           hosts: buildHosts(config.hosts),
           ...fullConfig && {
             "mixed-port": 7890,
@@ -1132,7 +1134,7 @@ https://github.com/powerfullz/override-rules
             "routing-mark": 7894,
             "allow-lan": true,
             "bind-address": "*",
-            ipv6: ipv6Enabled,
+            ipv6: effectiveIpv6Enabled,
             mode: "rule",
             "unified-delay": true,
             "tcp-concurrent": true,
@@ -1147,7 +1149,12 @@ https://github.com/powerfullz/override-rules
           "rule-providers": ruleProviders,
           rules: finalRules,
           sniffer: snifferConfig,
-          dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns, campusDnsServers }),
+          dns: buildDns({
+            fakeIPEnabled,
+            ipv6Enabled: effectiveIpv6Enabled,
+            existingDns: config.dns,
+            campusDnsServers
+          }),
           tun: buildTunConfig(tunEnabled),
           "geodata-mode": true,
           "geox-url": geoxURL
