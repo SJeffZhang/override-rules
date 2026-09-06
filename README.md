@@ -52,6 +52,15 @@ iNetS 日本 标准 01
 
 #### 校园网 DNS 固化
 
+本 Fork 固定维护两套 Sub-Store 使用入口。两套入口使用同一份源码和同一份节点/分流规则，唯一差别是是否写入微信图片域名的校园 DNS 策略；因此后续规则更新会同时覆盖两套入口，避免功能漂移。
+
+| 使用环境 | Sub-Store 脚本链接 | DNS 行为 |
+| --- | --- | --- |
+| 校园网 | `https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/convert.min.js#loadbalance=true&campus_dns=192.168.56.22,192.168.56.23` | `qpic.cn`、`qlogo.cn` 等微信图片域名走校园网 DHCP DNS。 |
+| 家庭网络、手机热点、其它 Wi-Fi | `https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/convert.min.js#loadbalance=true` | 不写入校园 DNS 策略，全部使用默认 AliDNS DoH。 |
+
+不要在非校园网使用第一条链接：`192.168.56.22` 与 `192.168.56.23` 是校园网内网 DNS，离开校园后可能不可达或不适合当前网络。切换网络时，在 Sub-Store 中替换 Script Operator 的远程链接、保存，然后重新应用 Mihomo Profile。
+
 为适配当前校园网环境，脚本会统一规范化顶层 DNS 配置为 AliDNS DoH over HTTP/2 链路：
 
 ```yaml
@@ -92,7 +101,7 @@ dns:
       - CAMPUS_DNS
 ```
 
-其中 `CAMPUS_DNS` 不是默认值，必须通过脚本参数 `campus_dns` 传入校园网 DHCP 实际下发的 DNS，例如：
+其中 `CAMPUS_DNS` 不是默认值，必须通过脚本参数 `campus_dns` 传入校园网 DHCP 实际下发的 DNS。当前校园网的两个 DNS 是 `192.168.56.22`、`192.168.56.23`，校园网入口已预填这两个值；通用入口则完全不带 `campus_dns`。自定义校园网络时，格式例如：
 
 ```text
 https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/convert.min.js#loadbalance=true&campus_dns=10.10.10.10
