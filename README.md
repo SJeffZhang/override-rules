@@ -52,7 +52,7 @@ iNetS 日本 标准 01
 
 #### 校园网 DNS 固化
 
-本 Fork 固定维护两套 Sub-Store 使用入口。两套入口使用同一份源码和同一份节点/分流规则，唯一差别是是否写入微信图片域名的校园 DNS 策略；因此后续规则更新会同时覆盖两套入口，避免功能漂移。
+本 Fork 固定维护两套 Sub-Store 使用入口。两套入口使用同一份源码和同一份节点/分流规则，唯一差别是是否写入微信图片域名的校园 DNS 策略；因此后续规则更新会同时覆盖两套入口，避免功能漂移。校园网入口还会强制输出顶层 `ipv6: false`：微信可能通过内置 HTTPDNS 直接尝试 IPv6 媒体地址，单独设置 `dns.ipv6: false` 无法阻止该路径进入 TUN。
 
 | 使用环境 | Sub-Store 脚本链接 | DNS 行为 |
 | --- | --- | --- |
@@ -191,7 +191,7 @@ GitHub Raw 通常更适合开发阶段及时获取最新脚本；jsDelivr 可能
 目前支持的参数：
 
 *   `grouptype`：地区代理组类型（0=手动选择 select，1=自动测速 url-test，2=负载均衡 load-balance，默认 1）
-*   `ipv6`：启用 IPv6 支持（默认 false）
+*   `ipv6`：启用 IPv6 支持（默认 false）；传入 `campus_dns` 时会被强制关闭，以避免校园网 TUN 下的微信 IPv6 媒体链路异常。
 *   `full`：生成完整配置（适合纯内核启动，默认 false）
 *   `keepalive`：启用 TCP Keep Alive（默认 false）[^fn2]
 *   `fakeip`：DNS 增强模式使用 `fake-ip` 而不是 `redir-host`（开启后可能有助于解决 TUN 模式无法上网的问题；未传参时默认 `true`，显式传 `false` 时使用 `redir-host`）

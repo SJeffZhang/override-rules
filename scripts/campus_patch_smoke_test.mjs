@@ -150,6 +150,7 @@ const outputWithoutInterface = clone(runConvert(input, { network_interface: "" }
 assert.equal(Object.hasOwn(outputWithoutInterface, "interface-name"), false);
 
 const outputWithCampusDns = clone(runConvert(input, { campus_dns: "10.10.10.10,10.10.10.11" }));
+assert.equal(outputWithCampusDns.ipv6, false);
 assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.wechat.com"], [
     "10.10.10.10",
     "10.10.10.11",

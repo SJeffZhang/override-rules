@@ -69,6 +69,10 @@ const {
     campusDnsServers,
 } = buildFeatureFlags(rawArgs);
 
+// 校园网入口的微信媒体链路可能绕过普通 DNS、直接尝试 IPv6 地址。
+// 只要启用了 campus_dns，就在顶层配置中强制关闭 IPv6，避免 TUN 再次创建 IPv6 路由。
+const effectiveIpv6Enabled = campusDnsServers.length === 0 && ipv6Enabled;
+
 function buildHosts(existingHosts: ClashConfig["hosts"]): Record<string, string> {
     const hosts = { ...(existingHosts ?? {}) };
     hosts["dns.alidns.com"] = "223.5.5.5";
@@ -130,6 +134,7 @@ function main(config: ClashConfig): ClashConfig {
     return {
         proxies,
         ...(networkInterface ? { "interface-name": networkInterface } : {}),
+        ...(campusDnsServers.length > 0 && { ipv6: false }),
         hosts: buildHosts(config.hosts),
         ...(fullConfig && {
             "mixed-port": 7890,
@@ -138,7 +143,7 @@ function main(config: ClashConfig): ClashConfig {
             "routing-mark": 7894,
             "allow-lan": true,
             "bind-address": "*",
-            ipv6: ipv6Enabled,
+            ipv6: effectiveIpv6Enabled,
             mode: "rule",
             "unified-delay": true,
             "tcp-concurrent": true,
@@ -153,7 +158,12 @@ function main(config: ClashConfig): ClashConfig {
         "rule-providers": ruleProviders,
         rules: finalRules,
         sniffer: snifferConfig,
-        dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns, campusDnsServers }),
+        dns: buildDns({
+            fakeIPEnabled,
+            ipv6Enabled: effectiveIpv6Enabled,
+            existingDns: config.dns,
+            campusDnsServers,
+        }),
         tun: buildTunConfig(tunEnabled),
         "geodata-mode": true,
         "geox-url": geoxURL,
