@@ -15,6 +15,7 @@ https://github.com/powerfullz/override-rules
 - threshold: 地区节点数量小于该值时不显示分组 (默认 0)
 - regex: 使用正则过滤模式（include-all + filter）写入各地区代理组，而非直接枚举节点名称（默认 false）
 - network_interface: 绑定出站网卡，默认 en0；传空字符串则不输出 interface-name
+- campus_dns: 校园网 DHCP DNS，逗号/分号/竖线分隔；填写后微信相关域名使用 nameserver-policy 指向该 DNS
 
 源码已迁移至 `src/*.ts`。
 */
@@ -264,6 +265,9 @@ https://github.com/powerfullz/override-rules
     const value = String(args.network_interface ?? "").trim();
     return value.length > 0 ? value : void 0;
   }
+  function parseStringList(value) {
+    return String(value ?? "").split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
+  }
   function buildFeatureFlags(args) {
     return {
       groupType: parseGroupType(args),
@@ -275,7 +279,8 @@ https://github.com/powerfullz/override-rules
       regexFilter: parseBool(args.regex),
       tunEnabled: parseBool(args.tun),
       countryThreshold: parseNumber(args.threshold, 2),
-      networkInterface: parseNetworkInterface(args)
+      networkInterface: parseNetworkInterface(args),
+      campusDnsServers: parseStringList(args.campus_dns)
     };
   }
   var init_args = __esm({
@@ -861,7 +866,11 @@ https://github.com/powerfullz/override-rules
   });
 
   // src/dns.ts
-  function buildDnsConfig({ existingDns, fakeIpFilter }) {
+  function buildDnsConfig({
+    existingDns,
+    fakeIpFilter,
+    campusDnsServers = []
+  }) {
     const config = {
       enable: true,
       ipv6: false,
@@ -873,6 +882,11 @@ https://github.com/powerfullz/override-rules
       nameserver: ["https://dns.alidns.com/dns-query"],
       "proxy-server-nameserver": ["https://dns.alidns.com/dns-query"]
     };
+    if (campusDnsServers.length > 0) {
+      config["nameserver-policy"] = Object.fromEntries(
+        WECHAT_DNS_POLICY_DOMAINS.map((domain) => [domain, campusDnsServers])
+      );
+    }
     if (existingDns?.["fake-ip-range"]) {
       config["fake-ip-range"] = existingDns["fake-ip-range"];
     }
@@ -882,12 +896,17 @@ https://github.com/powerfullz/override-rules
     }
     return config;
   }
-  function buildDns({ fakeIPEnabled, ipv6Enabled, existingDns }) {
+  function buildDns({
+    fakeIPEnabled,
+    ipv6Enabled,
+    existingDns,
+    campusDnsServers
+  }) {
     void fakeIPEnabled;
     void ipv6Enabled;
-    return buildDnsConfig({ existingDns, fakeIpFilter: FAKE_IP_FILTER });
+    return buildDnsConfig({ existingDns, fakeIpFilter: FAKE_IP_FILTER, campusDnsServers });
   }
-  var FAKE_IP_FILTER, snifferConfig;
+  var FAKE_IP_FILTER, WECHAT_DNS_POLICY_DOMAINS, snifferConfig;
   var init_dns = __esm({
     "src/dns.ts"() {
       "use strict";
@@ -900,6 +919,15 @@ https://github.com/powerfullz/override-rules
         "*.icloud.com",
         "*.stun.*.*",
         "*.stun.*.*.*"
+      ];
+      WECHAT_DNS_POLICY_DOMAINS = [
+        "+.wechat.com",
+        "+.weixin.com",
+        "+.weixin.qq.com",
+        "+.wx.qq.com",
+        "+.wximg.qq.com",
+        "+.mmbiz.qpic.cn",
+        "+.mmsns.qpic.cn"
       ];
       snifferConfig = {
         sniff: {
@@ -1036,7 +1064,8 @@ https://github.com/powerfullz/override-rules
         regexFilter,
         tunEnabled,
         countryThreshold,
-        networkInterface
+        networkInterface,
+        campusDnsServers
       } = buildFeatureFlags(rawArgs);
       function buildHosts(existingHosts) {
         const hosts = { ...existingHosts ?? {} };
@@ -1116,7 +1145,7 @@ https://github.com/powerfullz/override-rules
           "rule-providers": ruleProviders,
           rules: finalRules,
           sniffer: snifferConfig,
-          dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns }),
+          dns: buildDns({ fakeIPEnabled, ipv6Enabled, existingDns: config.dns, campusDnsServers }),
           tun: buildTunConfig(tunEnabled),
           "geodata-mode": true,
           "geox-url": geoxURL
