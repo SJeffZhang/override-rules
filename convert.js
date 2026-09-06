@@ -926,6 +926,8 @@ https://github.com/powerfullz/override-rules
         "+.weixin.qq.com",
         "+.wx.qq.com",
         "+.wximg.qq.com",
+        "+.qpic.cn",
+        "+.qlogo.cn",
         "+.mmbiz.qpic.cn",
         "+.mmsns.qpic.cn"
       ];
