@@ -14,7 +14,7 @@ https://github.com/powerfullz/override-rules
 - quic: 允许 QUIC 流量（UDP 443，默认 false）
 - threshold: 地区节点数量小于该值时不显示分组 (默认 0)
 - regex: 使用正则过滤模式（include-all + filter）写入各地区代理组，而非直接枚举节点名称（默认 false）
-- network_interface: 绑定出站网卡，默认 en0；传空字符串则不输出 interface-name
+- network_interface: 可选，绑定出站网卡；默认不输出 interface-name（跨平台）；例如 macOS 可传 en0
 - campus_dns: 校园网 DHCP DNS，逗号/分号/竖线分隔；填写后微信相关域名使用 nameserver-policy 指向该 DNS
 
 源码已迁移至 `src/*.ts`。
@@ -259,9 +259,6 @@ https://github.com/powerfullz/override-rules
     return 1;
   }
   function parseNetworkInterface(args) {
-    if (!Object.prototype.hasOwnProperty.call(args, "network_interface")) {
-      return "en0";
-    }
     const value = String(args.network_interface ?? "").trim();
     return value.length > 0 ? value : void 0;
   }
