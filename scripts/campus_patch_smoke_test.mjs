@@ -104,7 +104,7 @@ const input = {
 const before = clone(input.proxies);
 const output = clone(runConvert(input, {}));
 
-assert.equal(output["interface-name"], "en0");
+assert.equal(Object.hasOwn(output, "interface-name"), false);
 assert.deepEqual(output.hosts, {
     "custom.local": "192.0.2.10",
     "dns.alidns.com": "223.5.5.5",
@@ -149,6 +149,9 @@ assertPolicyReferences(output);
 const outputWithoutInterface = clone(runConvert(input, { network_interface: "" }));
 assert.equal(Object.hasOwn(outputWithoutInterface, "interface-name"), false);
 
+const outputWithMacInterface = clone(runConvert(input, { network_interface: "en0" }));
+assert.equal(outputWithMacInterface["interface-name"], "en0");
+
 const outputWithCampusDns = clone(runConvert(input, { campus_dns: "10.10.10.10,10.10.10.11" }));
 assert.equal(outputWithCampusDns.ipv6, false);
 assert.deepEqual(outputWithCampusDns.dns["nameserver-policy"]["+.wechat.com"], [
@@ -180,7 +183,7 @@ console.log(
             dnsNameserver: output.dns.nameserver,
             wechatDnsPolicy: outputWithCampusDns.dns["nameserver-policy"]["+.wechat.com"],
             proxyServerNameserver: output.dns["proxy-server-nameserver"],
-            interfaceName: output["interface-name"],
+            interfaceName: outputWithMacInterface["interface-name"],
         },
         null,
         2

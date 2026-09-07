@@ -64,7 +64,6 @@ iNetS 日本 标准 01
 为适配当前校园网环境，脚本会统一规范化顶层 DNS 配置为 AliDNS DoH over HTTP/2 链路：
 
 ```yaml
-interface-name: en0
 hosts:
   dns.alidns.com: 223.5.5.5
 dns:
@@ -119,9 +118,10 @@ https://raw.githubusercontent.com/SJeffZhang/override-rules/refs/heads/preview/c
 
 `network_interface` 参数用于控制 `interface-name`：
 
-- 默认不传时输出 `interface-name: en0`；
-- 传其他网卡名时输出对应值，例如 `#loadbalance=true&network_interface=en1`；
-- 传空字符串时不输出 `interface-name`。
+- 默认不传时不输出 `interface-name`，可在 macOS、Windows、Linux 间通用；
+- macOS 需要固定出口网卡时，可传 `#loadbalance=true&network_interface=en0`；
+- Windows 通常不要传此参数。若确有多网卡绑定需求，填写 Windows 中 Mihomo 可识别的实际适配器名称；填错会使节点立即超时；
+- 传空字符串时同样不输出 `interface-name`。
 
 DNS enhanced-mode 已按校园网方案固定为 `fake-ip`，旧的 `fakeip=false` 参数仅保留兼容，不再把 DNS 切换到 `redir-host`。
 

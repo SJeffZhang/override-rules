@@ -18,10 +18,6 @@ function parseGroupType(args: ScriptArgs): GroupType {
 }
 
 function parseNetworkInterface(args: ScriptArgs): string | undefined {
-    if (!Object.prototype.hasOwnProperty.call(args, "network_interface")) {
-        return "en0";
-    }
-
     const value = String(args.network_interface ?? "").trim();
     return value.length > 0 ? value : undefined;
 }
