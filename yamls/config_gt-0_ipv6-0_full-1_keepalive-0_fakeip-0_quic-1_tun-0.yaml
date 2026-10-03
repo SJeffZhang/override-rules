@@ -1,3 +1,5 @@
+hosts:
+  dns.alidns.com: 223.5.5.5
 mixed-port: 7890
 redir-port: 7892
 tproxy-port: 7893
@@ -20,6 +22,11 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png
     type: select
     proxies:
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 自动选择
       - 故障转移
       - 香港节点
@@ -39,6 +46,11 @@ proxy-groups:
     type: select
     proxies: &a1
       - 选择代理
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 香港节点
       - 台湾节点
       - 新加坡节点
@@ -71,6 +83,10 @@ proxy-groups:
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Xbox.png
     type: select
     proxies: *a1
+  - name: Steam
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png
+    type: select
+    proxies: *a1
   - name: Github
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/GitHub.png
     type: select
@@ -80,6 +96,11 @@ proxy-groups:
     type: select
     proxies:
       - DIRECT
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 台湾节点
       - 香港节点
   - name: 巴哈姆特
@@ -87,6 +108,11 @@ proxy-groups:
     type: select
     proxies:
       - 台湾节点
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 选择代理
       - 手动选择
       - DIRECT
@@ -124,6 +150,11 @@ proxy-groups:
     include-all: true
     proxies:
       - DIRECT
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 香港节点
       - 台湾节点
       - 新加坡节点
@@ -137,6 +168,11 @@ proxy-groups:
     type: select
     proxies:
       - 美国节点
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 选择代理
       - 手动选择
   - name: E-Hentai
@@ -164,11 +200,25 @@ proxy-groups:
       - REJECT
       - REJECT-DROP
       - DIRECT
-  - name: Final
+  - name: 漏网之鱼
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
     type: select
     proxies:
       - 选择代理
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
+      - 自动选择
+      - 故障转移
+      - 香港节点
+      - 台湾节点
+      - 新加坡节点
+      - 日本节点
+      - 美国节点
+      - 低倍率节点
+      - 手动选择
       - DIRECT
   - name: 自动选择
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png
@@ -194,6 +244,37 @@ proxy-groups:
     type: select
     include-all: true
     filter: (?i)0\.[0-5]|低倍率|省流|实验性
+  - name: 香港-iNetS+滕王阁
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
+    type: select
+    include-all: true
+    filter: (?i)(?:iNetS|滕王阁).*香港
+    exclude-filter: (?i)实验性
+  - name: 新加坡-iNetS+滕王阁
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png
+    type: select
+    include-all: true
+    filter: (?i)(?:iNetS|滕王阁).*新加坡
+    exclude-filter: (?i)实验性
+  - name: 日本-iNetS+滕王阁
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png
+    type: select
+    include-all: true
+    filter: (?i)(?:iNetS|滕王阁).*日本
+    exclude-filter: (?i)实验性
+  - name: 美国-iNetS+滕王阁
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png
+    type: select
+    include-all: true
+    filter: (?i)美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|纽约|亚特兰大|迈阿密|华盛顿|\b(?:US|us)(?:[-_
+      ]?\d+(?:[-_ ]?[A-Za-z]{2,})?)?\b|United States|UnitedStates|UNITED
+      STATES|USA|America|AMERICA|JFK|EWR|IAD|ATL|ORD|MIA|NYC|LAX|SFO|SEA|DFW|SJC|🇺🇸
+    exclude-filter: (?i)良心云
+  - name: 小众地区
+    icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Area.png
+    type: select
+    include-all: true
+    filter: (?i)摩尔多瓦|意大利|匈牙利|西班牙|荷兰|巴西|智利|新西兰|印尼|印度尼西亚|越南|巴基斯坦|以色列|阿联酋|阿拉伯联合酋长国|尼日利亚|南非
   - name: 香港节点
     icon: https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png
     type: select
@@ -241,6 +322,7 @@ proxy-groups:
       - 谷歌服务
       - 微软服务
       - Xbox
+      - Steam
       - Github
       - 哔哩哔哩
       - 巴哈姆特
@@ -258,10 +340,15 @@ proxy-groups:
       - 搜狗输入法
       - SSH
       - 广告拦截
-      - Final
+      - 漏网之鱼
       - 自动选择
       - 故障转移
       - 低倍率节点
+      - 香港-iNetS+滕王阁
+      - 新加坡-iNetS+滕王阁
+      - 日本-iNetS+滕王阁
+      - 美国-iNetS+滕王阁
+      - 小众地区
       - 香港节点
       - 台湾节点
       - 新加坡节点
@@ -310,13 +397,20 @@ rule-providers:
     interval: 86400
     url: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/EHentai.list
     path: ./ruleset/EHentai.list
-  SteamFix:
+  SteamCN:
     type: http
-    behavior: classical
-    format: text
+    behavior: domain
+    format: mrs
     interval: 86400
-    url: https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/SteamFix.list
-    path: ./ruleset/SteamFix.list
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs
+    path: ./ruleset/SteamCN.mrs
+  Steam:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs
+    path: ./ruleset/Steam.mrs
   GoogleFCM:
     type: http
     behavior: classical
@@ -364,6 +458,8 @@ rules:
   - GEOIP,private,DIRECT,no-resolve
   - RULE-SET,ADBlock,广告拦截
   - RULE-SET,AdditionalFilter,广告拦截
+  - RULE-SET,SteamCN,DIRECT
+  - RULE-SET,Steam,Steam
   - RULE-SET,SogouInput,搜狗输入法
   - DOMAIN-SUFFIX,truthsocial.com,Truth Social
   - RULE-SET,StaticResources,静态资源
@@ -386,7 +482,6 @@ rules:
   - RULE-SET,Weibo,新浪微博
   - RULE-SET,EHentai,E-Hentai
   - RULE-SET,TikTok,TikTok
-  - RULE-SET,SteamFix,DIRECT
   - RULE-SET,GoogleFCM,DIRECT
   - GEOSITE,google-play@cn,DIRECT
   - GEOSITE,microsoft@cn,DIRECT
@@ -396,7 +491,7 @@ rules:
   - RULE-SET,Crypto,加密货币
   - RULE-SET,GFWList,选择代理
   - GEOIP,cn,DIRECT
-  - MATCH,Final
+  - MATCH,漏网之鱼
 sniffer:
   sniff:
     TLS:
@@ -422,25 +517,25 @@ sniffer:
 dns:
   enable: true
   ipv6: false
-  prefer-h3: true
-  enhanced-mode: redir-host
+  prefer-h3: false
+  enhanced-mode: fake-ip
+  use-hosts: true
+  use-system-hosts: false
   default-nameserver:
-    - 119.29.29.29
     - 223.5.5.5
   nameserver:
-    - system
-    - 223.5.5.5
-    - 119.29.29.29
-    - 180.184.1.1
-  fallback:
-    - quic://dns0.eu
-    - https://dns.cloudflare.com/dns-query
-    - https://dns.sb/dns-query
-    - tcp://208.67.222.222
-    - tcp://8.26.56.2
+    - https://dns.alidns.com/dns-query
   proxy-server-nameserver:
     - https://dns.alidns.com/dns-query
-    - tls://dot.pub
+  fake-ip-filter:
+    - geosite:private
+    - geosite:connectivity-check
+    - Mijia Cloud
+    - dig.io.mi.com
+    - localhost.ptlogin2.qq.com
+    - "*.icloud.com"
+    - "*.stun.*.*"
+    - "*.stun.*.*.*"
 tun:
   enable: false
   stack: gvisor

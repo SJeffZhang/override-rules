@@ -119,6 +119,7 @@ https://github.com/powerfullz/override-rules
         BILIBILI: "哔哩哔哩",
         BAHAMUT: "巴哈姆特",
         XBOX: "Xbox",
+        STEAM: "Steam",
         GITHUB: "Github",
         YOUTUBE: "Youtube",
         NETFLIX: "Netflix",
@@ -339,6 +340,18 @@ https://github.com/powerfullz/override-rules
     const hasHK = countryNames.includes("香港");
     const hasUS = countryNames.includes("美国");
     const customGroups = [
+      ...nodes.some((node) => node.name === "个人节点-US-LA") ? [
+        {
+          name: "自建美西节点",
+          icon: countriesMeta.美国.icon,
+          matcher: {
+            source: "^个人节点-US-LA$",
+            regex: /^个人节点-US-LA$/,
+            pattern: "^个人节点-US-LA$"
+          },
+          forceSelect: true
+        }
+      ] : [],
       {
         name: PROXY_GROUPS.HONG_KONG_INETS_TWG,
         icon: countriesMeta.香港.icon,
@@ -453,6 +466,12 @@ https://github.com/powerfullz/override-rules
       {
         name: PROXY_GROUPS.XBOX,
         icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Xbox.png`,
+        type: "select",
+        proxies: defaultProxiesWithCustom
+      },
+      {
+        name: PROXY_GROUPS.STEAM,
+        icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Steam.png`,
         type: "select",
         proxies: defaultProxiesWithCustom
       },
@@ -710,6 +729,8 @@ https://github.com/powerfullz/override-rules
         `GEOIP,private,DIRECT,no-resolve`,
         `RULE-SET,ADBlock,${PROXY_GROUPS.AD_BLOCK}`,
         `RULE-SET,AdditionalFilter,${PROXY_GROUPS.AD_BLOCK}`,
+        `RULE-SET,SteamCN,DIRECT`,
+        `RULE-SET,Steam,${PROXY_GROUPS.STEAM}`,
         `RULE-SET,SogouInput,${PROXY_GROUPS.SOGOU_INPUT}`,
         `DOMAIN-SUFFIX,truthsocial.com,${PROXY_GROUPS.TRUTH_SOCIAL}`,
         `RULE-SET,StaticResources,${PROXY_GROUPS.STATIC_RESOURCES}`,
@@ -732,7 +753,6 @@ https://github.com/powerfullz/override-rules
         `RULE-SET,Weibo,${PROXY_GROUPS.WEIBO}`,
         `RULE-SET,EHentai,${PROXY_GROUPS.EHENTAI}`,
         `RULE-SET,TikTok,${PROXY_GROUPS.TIKTOK}`,
-        `RULE-SET,SteamFix,DIRECT`,
         `RULE-SET,GoogleFCM,DIRECT`,
         `GEOSITE,google-play@cn,DIRECT`,
         `GEOSITE,microsoft@cn,DIRECT`,
@@ -802,13 +822,21 @@ https://github.com/powerfullz/override-rules
           url: `${CDN_URL}/gh/powerfullz/override-rules@master/ruleset/EHentai.list`,
           path: "./ruleset/EHentai.list"
         },
-        SteamFix: {
+        SteamCN: {
           type: "http",
-          behavior: "classical",
-          format: "text",
+          behavior: "domain",
+          format: "mrs",
           interval: 86400,
-          url: `${CDN_URL}/gh/powerfullz/override-rules@master/ruleset/SteamFix.list`,
-          path: "./ruleset/SteamFix.list"
+          url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs",
+          path: "./ruleset/SteamCN.mrs"
+        },
+        Steam: {
+          type: "http",
+          behavior: "domain",
+          format: "mrs",
+          interval: 86400,
+          url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs",
+          path: "./ruleset/Steam.mrs"
         },
         GoogleFCM: {
           type: "http",
