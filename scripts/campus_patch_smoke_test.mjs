@@ -146,6 +146,58 @@ assert.equal(hkGroup.proxies.includes("iNetS 香港 实验性 01"), false);
 
 assertPolicyReferences(output);
 
+// Private credentials are supplied by the local subscription, never embedded in the script.
+const personalNode = proxy("个人节点-US-LA", "192.0.2.25", {
+    type: "vless",
+    uuid: "00000000-0000-4000-8000-000000000001",
+    network: "tcp",
+    tls: true,
+    flow: "xtls-rprx-vision",
+    "packet-encoding": "xudp",
+    "reality-opts": { "public-key": "test-public-key", "short-id": "abcd" },
+});
+assert.equal(
+    output["proxy-groups"].some((g) => g.name === "自建美西节点"),
+    false
+);
+for (const args of [{}, { loadbalance: true }, { regex: true, loadbalance: true }]) {
+    const personalOutput = clone(
+        runConvert({ ...input, proxies: [...input.proxies, personalNode] }, args)
+    );
+    const group = personalOutput["proxy-groups"].find((g) => g.name === "自建美西节点");
+    assert.ok(group);
+    assert.equal(group.type, "select");
+    if (args.regex) {
+        assert.equal(group.filter, "^个人节点-US-LA$");
+        assert.equal(new RegExp(group.filter).test("iNetS 美国 01"), false);
+    } else {
+        assert.deepEqual(group.proxies, [personalNode.name]);
+    }
+    assert.deepEqual(
+        personalOutput.proxies.find((p) => p.name === personalNode.name),
+        personalNode
+    );
+    assert.ok(
+        personalOutput["proxy-groups"].find((g) => g.name === "Steam").proxies.includes(group.name)
+    );
+    assertPolicyReferences(personalOutput);
+}
+
+assert.equal(Object.hasOwn(output["rule-providers"], "SteamFix"), false);
+assert.equal(
+    output.rules.some((rule) => rule.includes("SteamFix")),
+    false
+);
+const steamCnIndex = output.rules.indexOf("RULE-SET,SteamCN,DIRECT");
+const steamIndex = output.rules.indexOf("RULE-SET,Steam,Steam");
+assert.ok(steamCnIndex >= 0 && steamCnIndex < steamIndex);
+assert.ok(
+    steamIndex < output.rules.findIndex((rule) => rule.startsWith("RULE-SET,StaticResources,"))
+);
+const steamGroup = output["proxy-groups"].find((group) => group.name === "Steam");
+assert.equal(steamGroup.type, "select");
+assert.ok(steamGroup.proxies.includes("DIRECT"));
+
 const outputWithoutInterface = clone(runConvert(input, { network_interface: "" }));
 assert.equal(Object.hasOwn(outputWithoutInterface, "interface-name"), false);
 

@@ -98,6 +98,20 @@ export function buildProxyGroups({
         excludeMatcher?: CaseInsensitiveNodeMatcher;
         forceSelect?: boolean;
     }> = [
+        ...(nodes.some((node) => node.name === "个人节点-US-LA")
+            ? [
+                  {
+                      name: "自建美西节点",
+                      icon: countriesMeta.美国.icon,
+                      matcher: {
+                          source: "^个人节点-US-LA$",
+                          regex: /^个人节点-US-LA$/,
+                          pattern: "^个人节点-US-LA$",
+                      },
+                      forceSelect: true,
+                  },
+              ]
+            : []),
         {
             name: PROXY_GROUPS.HONG_KONG_INETS_TWG,
             icon: countriesMeta.香港.icon,
@@ -227,6 +241,12 @@ export function buildProxyGroups({
         {
             name: PROXY_GROUPS.XBOX,
             icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Xbox.png`,
+            type: "select",
+            proxies: defaultProxiesWithCustom,
+        },
+        {
+            name: PROXY_GROUPS.STEAM,
+            icon: `${CDN_URL}/gh/Koolson/Qure@master/IconSet/Color/Steam.png`,
             type: "select",
             proxies: defaultProxiesWithCustom,
         },

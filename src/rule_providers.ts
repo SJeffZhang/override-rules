@@ -50,13 +50,21 @@ export const ruleProviders: Record<string, RuleProvider> = {
         url: `${CDN_URL}/gh/powerfullz/override-rules@master/ruleset/EHentai.list`,
         path: "./ruleset/EHentai.list",
     },
-    SteamFix: {
+    SteamCN: {
         type: "http",
-        behavior: "classical",
-        format: "text",
+        behavior: "domain",
+        format: "mrs",
         interval: 86400,
-        url: `${CDN_URL}/gh/powerfullz/override-rules@master/ruleset/SteamFix.list`,
-        path: "./ruleset/SteamFix.list",
+        url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.mrs",
+        path: "./ruleset/SteamCN.mrs",
+    },
+    Steam: {
+        type: "http",
+        behavior: "domain",
+        format: "mrs",
+        interval: 86400,
+        url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.mrs",
+        path: "./ruleset/Steam.mrs",
     },
     GoogleFCM: {
         type: "http",

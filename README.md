@@ -237,7 +237,11 @@ https://raw.githubusercontent.com/powerfullz/override-rules/refs/heads/preview/c
 
 ~~**Play 商店修复**：~~ 修复国行设备因使用`services.googleapis.cn`域名导致的 Google Play 下载应用时的「等待中…」问题。详见：[「Google Play 商店的国内 CDN：从密码学入门到分流策略优化」](https://blog.l3zc.com/2025/03/chinese-cdn-used-by-playstore/)，已经是默认行为。
 
-~~**Steam 修复**：~~ 用于让 Steam 客户端调用国内 CDN 及 P2P 网络下载，节省大量流量，已经是默认行为。
+**Steam 分流**：仅使用 [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat) 的 `steam@cn.mrs` 与 `steam.mrs` 两个远程域名规则集，每 86400 秒检查更新。已移除旧的 `SteamFix` provider 与分流规则。
+
+先匹配 `SteamCN` 并走 `DIRECT`，其余 Steam 域名进入独立的 `Steam` 手动选择组，可选择现有地区与定制节点组。两条规则位于通用静态资源/CDN 规则之前，避免 Steam 域名被其它业务组抢先匹配。校园网和通用网络入口均使用相同的 Steam 分流。
+
+注意：`steam@cn` 只覆盖上游标记为国内的域名，并非所有下载域名；未包含的下载 CDN 也会进入 `Steam` 组。移除 `SteamFix` 后，不再强制所有下载直连，可在 Steam 组选择 `DIRECT`。
 
 ### 关于链式代理的说明
 
@@ -282,6 +286,12 @@ https://git.l3zc.com/powerfullz/override-rules/raw/branch/dist/yamls/config_gt-0
 *注：CI 仅套用了一份虚拟的 `fake_proxies.json` 来模拟生成 YAML，因此它无法像 JS 动态脚本那样根据你的实际节点智能生成专属分组策略，只能保守地包含常用的国家/地区。为了最高效的分流体验，仍强烈推荐使用 JS 覆写。*
 
 ### 如何自定义与贡献
+
+### 自建美西节点
+
+输入订阅包含名为 `个人节点-US-LA` 的节点时，脚本自动生成独立的 `自建美西节点` 组，并将它加入节点选择、AI、Steam 等服务组的候选列表。该组始终使用手动选择（`select`），不受测速/负载均衡参数影响，只包含这个自建节点。未提供该节点时不生成此组。
+
+节点地址、UUID、REALITY 等连接参数从输入订阅读取，脚本不内置私人凭据。在 Sub-Store 中新增一个 Single，使用本地内容填写个人节点 YAML 的 `proxies` 部分；将此 Single 加入现有 Collection，再更新使用本脚本的 Mihomo 文件。请保留节点名称 `个人节点-US-LA`，不要对它添加机场前缀或改名，否则无法匹配独立组。不要将包含私人凭据的 YAML 上传到公开仓库。
 
 **如果你想基于本项目深度定制自己专属的覆写规则：**
 
