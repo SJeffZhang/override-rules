@@ -293,6 +293,12 @@ https://git.l3zc.com/powerfullz/override-rules/raw/branch/dist/yamls/config_gt-0
 
 节点地址、UUID、REALITY 等连接参数从输入订阅读取，脚本不内置私人凭据。在 Sub-Store 中新增一个 Single，使用本地内容填写个人节点 YAML 的 `proxies` 部分；将此 Single 加入现有 Collection，再更新使用本脚本的 Mihomo 文件。请保留节点名称 `个人节点-US-LA`，不要对它添加机场前缀或改名，否则无法匹配独立组。不要将包含私人凭据的 YAML 上传到公开仓库。
 
+### 自建日本节点
+
+输入订阅包含名为 `个人节点-JP-Tokyo` 的节点时，脚本自动生成独立的 `自建日本节点` 组，只包含这个东京自建节点，与 `自建美西节点` 及其他日本分组分别显示。该组始终使用手动选择（`select`），不受测速/负载均衡参数影响，并加入节点选择、AI、Steam 等服务组的候选列表；未提供该节点时不生成此组。
+
+接入方式与美西节点相同：在 Sub-Store 中添加包含东京节点 `proxies` 内容的本地 Single，将它加入现有 Collection，再更新 Mihomo 文件及 Clash Party 订阅。保留名称 `个人节点-JP-Tokyo`，不要添加机场前缀或改名。脚本仅识别节点名称，连接参数由私人订阅提供，不要上传至公开仓库。
+
 **如果你想基于本项目深度定制自己专属的覆写规则：**
 
 请阅读 [如何自定义专属覆写规则](docs/HOW_TO_CUSTOMISE.md)。里面详细介绍了如何修改默认参数、调整代理组及增添自定义的 Rule Providers。

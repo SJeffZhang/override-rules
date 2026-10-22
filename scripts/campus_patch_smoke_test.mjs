@@ -183,6 +183,53 @@ for (const args of [{}, { loadbalance: true }, { regex: true, loadbalance: true 
     assertPolicyReferences(personalOutput);
 }
 
+const tokyoNode = { ...personalNode, name: "个人节点-JP-Tokyo", server: "192.0.2.26" };
+for (const args of [
+    {},
+    { loadbalance: true },
+    { regex: true },
+    { regex: true, loadbalance: true },
+]) {
+    const withoutTokyo = clone(runConvert(input, args));
+    assert.equal(
+        withoutTokyo["proxy-groups"].some((g) => g.name === "自建日本节点"),
+        false
+    );
+    for (const personalNodes of [[tokyoNode], [personalNode, tokyoNode]]) {
+        const personalOutput = clone(
+            runConvert({ ...input, proxies: [...input.proxies, ...personalNodes] }, args)
+        );
+        const group = personalOutput["proxy-groups"].find((g) => g.name === "自建日本节点");
+        assert.ok(group);
+        assert.equal(group.type, "select");
+        if (args.regex) {
+            assert.equal(group.filter, "^个人节点-JP-Tokyo$");
+            const matches = new RegExp(group.filter);
+            assert.equal(matches.test(tokyoNode.name), true);
+            for (const name of [personalNode.name, "iNetS 日本 01", "前缀 个人节点-JP-Tokyo"]) {
+                assert.equal(matches.test(name), false);
+            }
+        } else {
+            assert.deepEqual(group.proxies, [tokyoNode.name]);
+        }
+        assert.deepEqual(
+            personalOutput.proxies.find((p) => p.name === tokyoNode.name),
+            tokyoNode
+        );
+        for (const name of ["选择代理", "AI服务", "Steam"]) {
+            assert.ok(
+                personalOutput["proxy-groups"]
+                    .find((g) => g.name === name)
+                    .proxies.includes(group.name)
+            );
+        }
+        const usGroup = personalOutput["proxy-groups"].find((g) => g.name === "自建美西节点");
+        assert.equal(Boolean(usGroup), personalNodes.includes(personalNode));
+        if (usGroup && !args.regex) assert.deepEqual(usGroup.proxies, [personalNode.name]);
+        assertPolicyReferences(personalOutput);
+    }
+}
+
 assert.equal(Object.hasOwn(output["rule-providers"], "SteamFix"), false);
 assert.equal(
     output.rules.some((rule) => rule.includes("SteamFix")),

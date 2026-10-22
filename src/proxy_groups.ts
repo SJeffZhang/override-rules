@@ -112,6 +112,20 @@ export function buildProxyGroups({
                   },
               ]
             : []),
+        ...(nodes.some((node) => node.name === "个人节点-JP-Tokyo")
+            ? [
+                  {
+                      name: "自建日本节点",
+                      icon: countriesMeta.日本.icon,
+                      matcher: {
+                          source: "^个人节点-JP-Tokyo$",
+                          regex: /^个人节点-JP-Tokyo$/,
+                          pattern: "^个人节点-JP-Tokyo$",
+                      },
+                      forceSelect: true,
+                  },
+              ]
+            : []),
         {
             name: PROXY_GROUPS.HONG_KONG_INETS_TWG,
             icon: countriesMeta.香港.icon,
