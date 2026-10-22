@@ -1,16 +1,16 @@
 {
   "tag": "preview",
-  "commit": "6096c8a",
-  "releasedAt": "2026-10-03T08:21:49.445Z",
+  "commit": "ee2eecd28cd0e9901326795cfb1d3e2b2335621f",
+  "releasedAt": "2026-10-22T15:17:44.246427Z",
   "fileCount": 194,
   "files": [
     {
       "path": "convert.js",
-      "sha256": "8f1e973d63b9bcabcb55229364791159cf79c9152d17c253cc93fab717d0b95d"
+      "sha256": "b6bfa87b6689b4abcbf602fc7a470219a1748e3d072112240642b0af6c4b0fc4"
     },
     {
       "path": "convert.min.js",
-      "sha256": "98e2c9a79685f9876340b04fa5472bb2b7eca8678a973b9f28cee2c2366eed9e"
+      "sha256": "a6b9c19d84d5e804a17bf1e23fc937c639f715534ddded50c6d2f19a076809b1"
     },
     {
       "path": "yamls/config_gt-0_ipv6-0_full-0_keepalive-0_fakeip-0_quic-0_tun-0.yaml",
